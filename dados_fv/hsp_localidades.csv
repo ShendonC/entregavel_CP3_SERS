@@ -1,0 +1,19 @@
+﻿cidade,uf,hsp_kwh_m2_dia,fonte,url_fonte
+São Paulo,SP,5.0,CRESESB/SunData (via tabela publicada),https://energiasolarexplicada.com.br/blog/quantas-placas-solares-preciso/
+Porto Alegre,RS,4.6,CRESESB/SunData (via tabela publicada),https://energiasolarexplicada.com.br/blog/quantas-placas-solares-preciso/
+Natal,RN,6.0,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Fortaleza,CE,5.9,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Salvador,BA,5.8,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Maceió,AL,5.8,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Recife,PE,5.8,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Teresina,PI,5.8,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Aracaju,SE,5.7,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Brasília,DF,5.6,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Goiânia,GO,5.6,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Cuiabá,MT,5.5,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Palmas,TO,5.5,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/
+Rio de Janeiro,RJ,5.2,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://cresesb.cepel.br/index.php?section=sundata
+Belo Horizonte,MG,5.5,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://cresesb.cepel.br/index.php?section=sundata
+Curitiba,PR,4.5,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://cresesb.cepel.br/index.php?section=sundata
+Campinas,SP,5.3,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://cresesb.cepel.br/index.php?section=sundata
+Florianópolis,SC,4.4,CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017,https://cresesb.cepel.br/index.php?section=sundata

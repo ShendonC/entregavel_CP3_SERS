@@ -1,0 +1,193 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Proposta Fotovoltaica Consolidada - Residencia Familia Silva (SP) | Equipe Lumos FIAP</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --accent: #0284c7;
+      --green: #059669;
+      --amber: #d97706;
+      --border: #e2e8f0;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+    .container { max-width: 1120px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      color: #fff;
+      padding: 28px 32px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    header h1 { margin: 0 0 8px 0; font-size: 24px; }
+    header p { margin: 4px 0; color: #cbd5e1; font-size: 14px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .kpi .label { font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+    .kpi .value { font-size: 22px; font-weight: 700; color: var(--ink); margin-top: 4px; }
+    .kpi .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 10px;
+      color: #1e3a8a;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
+    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    th { background: #f1f5f9; font-weight: 600; }
+    .badge-ok { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    .badge-warn { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
+    .callout {
+      background: #f0f9ff;
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 6px;
+      margin-top: 18px;
+    }
+    .callout h3 { margin: 0 0 8px 0; font-size: 16px; color: #0369a1; }
+    footer { text-align: center; font-size: 13px; color: var(--muted); padding: 16px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Proposta Tecnica e Economica - Sistema Solar Fotovoltaico (Residencia Familia Silva (SP))</h1>
+      <p><strong>Disciplina:</strong> Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves) - Sprint 3 Final</p>
+      <p><strong>Equipe Lumos (FIAP):</strong> Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)</p>
+      <p><strong>Localidade:</strong> São Paulo/SP | <strong>Data de emissao:</strong> 2026-10-15 19:48</p>
+    </header>
+
+    <div class="grid">
+      <div class="kpi">
+        <div class="label">Consumo Mensal / Diario (PB02)</div>
+        <div class="value">455,31 kWh/mes</div>
+        <div class="sub">E_dia: 15,18 kWh/dia | Pot. Casa: 9,01 kW</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Potencia FV Instalada (PB04/PB06)</div>
+        <div class="value">4,05 kWp</div>
+        <div class="sub">Necessaria: 3,89 kWp | HSP: 5,00 | PR: 78%</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Geracao Estimada (PB08/PB09)</div>
+        <div class="value">473,9 kWh/mes</div>
+        <div class="sub">Diaria: 15,79 kWh/dia (104,1% do consumo)</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Investimento & Payback Simples (PB13/PB16)</div>
+        <div class="value">R$ 11.590,88</div>
+        <div class="sub">Economia: R$ 418,89/mes | Retorno: 2,31 anos</div>
+      </div>
+    </div>
+
+    <section class="card">
+      <h2>1. Especificacao Tecnica do Sistema Dimensionado (PB03 a PB12)</h2>
+      <table>
+        <tbody>
+          <tr><th style="width:28%">Recurso Solar (HSP e PR)</th><td><strong>São Paulo/SP</strong>: HSP = 5,00 kWh/m2/dia (CRESESB/SunData (via tabela publicada))<br><small>PR = 0,78 (78%) adotado conforme Nota Tecnica EPE DEA-SEE 009/2023 e manual CRESESB/CEPEL (faixa tipica residencial de 75% a 80%), contabilizando perdas termicas nos modulos (~8%), sujeira e sombreamento leve (~5%), quedas ohmicas em cabos CC/CA (~3%), mismatch (~2%) e eficiencia de conversao do inversor (~2% a 4%).</small></td></tr>
+          <tr><th>Modulos Fotovoltaicos</th><td><strong>10x [FV006] Trina Solar TSM-405DE09 (Vertex S)</strong> (405 Wp, Eficiencia 21,10%, Voc 41,20 V, Vmp 34,20 V, Imp 11,85 A)<br>Arranjo: N minimo = 10 -> N instalado = 10 (1 string(s) de 10 modulos em serie)</td></tr>
+          <tr><th>Inversor e Compatibilidade</th><td><strong>[INV001] Growatt MIC 3000TL-X</strong> (Tipo: on-grid, Potencia Nominal: 3000 W, Max FV: 4200 W, Eficiencia: 97,6%)<br>Verificacao Eletrica: Voc string (frio) = 453,2 V (limite 500 V) | Vmp string = 342,0 V (MPPT 50-500 V) | Razao R_DC/AC = 1,35</td></tr>
+          <tr><th>Comparacao Geracao x Consumo</th><td>Consumo Mensal: 455,31 kWh/mes | Geracao Mensal: 473,85 kWh/mes (104,1%)<br>Energia Efetivamente Compensada: <strong>455,31 kWh/mes</strong> | Excedente Injetado na Rede: <strong>18,54 kWh/mes</strong></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>2. Orcamento Detalhado (PB13) e Indicadores Economicos (PB15 / PB16)</h2>
+      <table>
+        <thead>
+          <tr><th>Categoria</th><th>Equipamento / Descricao e Fonte</th><th style="text-align:center">Qtd</th><th style="text-align:right">Preco Unitario</th><th style="text-align:right">Subtotal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Modulo Fotovoltaico</td><td><strong>[FV006] Trina Solar TSM-405DE09 (Vertex S)</strong><br><small>Minha Casa Solar (2026-10-01) https://www.minhacasasolar.com.br/painel-solar-405w-monocristalino-half-cell-trina-solar-tsm-405de09-82174</small></td><td style='text-align:center'>10</td><td style='text-align:right'>R$ 590,32</td><td style='text-align:right'><strong>R$ 5.903,20</strong></td></tr>
+<tr><td>Inversor Fotovoltaico</td><td><strong>[INV001] Growatt MIC 3000TL-X</strong><br><small>Mercado Livre (2026-10-01) https://lista.mercadolivre.com.br/inversor-solar-growatt</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 1.589,00</td><td style='text-align:right'><strong>R$ 1.589,00</strong></td></tr>
+<tr><td>Custos Complementares</td><td>Estrutura de fixacao <small>(8% dos equipamentos)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 599,38</td><td style='text-align:right'>R$ 599,38</td></tr>
+<tr><td>Custos Complementares</td><td>Cabeamento e conectores <small>(4% dos equipamentos)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 299,69</td><td style='text-align:right'>R$ 299,69</td></tr>
+<tr><td>Custos Complementares</td><td>Protecoes / string box <small>(5% dos equipamentos)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 374,61</td><td style='text-align:right'>R$ 374,61</td></tr>
+<tr><td>Custos Complementares</td><td>Instalacao (mao de obra) <small>(R$ 500/kWp)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 2.025,00</td><td style='text-align:right'>R$ 2.025,00</td></tr>
+<tr><td>Custos Complementares</td><td>Projeto e homologacao <small>(valor fixo)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 800,00</td><td style='text-align:right'>R$ 800,00</td></tr>
+
+          <tr style="background:#f8fafc"><td colspan="4" style="text-align:right"><strong>SUBTOTAL DE EQUIPAMENTOS (DATASETS)</strong></td><td style="text-align:right"><strong>R$ 7.492,20</strong></td></tr>
+          <tr style="background:#e0f2fe"><td colspan="4" style="text-align:right"><strong>INVESTIMENTO TOTAL ESTIMADO DO PROJETO</strong></td><td style="text-align:right"><strong>R$ 11.590,88</strong></td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <h3>Estimativa de Economia e Payback Simples (PB15 / PB16)</h3>
+        <p><strong>Tarifa de Energia:</strong> R$ 0,92/kWh (Tarifa convencional B1 residencial com impostos (referencia ANEEL / Enel SP 2026)) | <strong>Energia Compensada:</strong> 455,31 kWh/mes</p>
+        <p><strong>Economia Mensal Estimada:</strong> R$ 418,89/mes | <strong>Economia Anual Estimada:</strong> R$ 5.026,68/ano</p>
+        <p><strong>Payback Simples (Investimento Total / Economia Anual):</strong> <span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span> (Apenas equipamentos: 1,49 anos)</p>
+        <p><small>Resultado calculado como PAYBACK SIMPLES (Investimento / Economia_anual). Trata-se de uma estimativa preliminar de tempo de retorno e NAO representa previsao financeira exata (nao inclui taxa de desconto/VPL, inflacao energetica, degradacao anual dos modulos nem custos de substituicao de baterias ao longo de 25 anos).</small></p>
+      </div>
+    </section>
+
+    
+        <section class="card">
+          <h2>Comparacao de Cenarios (PB14): Sem Baterias vs. Com Baterias</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>Indicador Tecnico / Economico</th>
+                <th>Cenario 1: Sem Baterias (On-Grid)</th>
+                <th>Cenario 2: Com Baterias (Hibrido)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Potencia FV Necessaria / Instalada</td><td>3,892 kWp / <strong>4,050 kWp</strong></td><td>3,892 kWp / <strong>4,050 kWp</strong></td></tr>
+              <tr><td>Modulos Fotovoltaicos</td><td>10x Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td><td>10x Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td></tr>
+              <tr><td>Inversor Selecionado</td><td>[INV001] Growatt MIC 3000TL-X (on-grid, 3000 W, efic. 97,6%)</td><td>[INV006] Deye SUN-5K-SG04LP1-EU-SM2 (hibrido, 5000 W, efic. 97,6%)</td></tr>
+              <tr><td>Geracao Estimada (Dia / Mes)</td><td>15,79 kWh/dia | 473,9 kWh/mes</td><td>15,79 kWh/dia | 473,9 kWh/mes</td></tr>
+              <tr><td>Atendimento / Energia Compensada</td><td>104,1% (455,31 kWh/mes)</td><td>104,1% (455,31 kWh/mes)</td></tr>
+              <tr><td>Armazenamento (Baterias)</td><td>Sem armazenamento (0 kWh)</td><td>2x [BAT005] Deye SE-F5 (10,24 kWh nominais / 9,22 kWh uteis)</td></tr>
+              <tr><td>Autonomia de Backup</td><td>0 h (depende da rede eletrica)</td><td><strong>12,0 horas</strong> (7,59 kWh)</td></tr>
+              <tr><td>Custo dos Equipamentos</td><td>R$ 7.492,20</td><td>R$ 26.062,20</td></tr>
+              <tr><td>Investimento Total Estimado</td><td><strong>R$ 11.590,88</strong></td><td><strong>R$ 33.317,78</strong> (+R$ 21.726,90 / +187,4%)</td></tr>
+              <tr><td>Economia Mensal / Anual</td><td>R$ 418,89/mes | R$ 5.026,68/ano</td><td>R$ 418,89/mes | R$ 5.026,68/ano</td></tr>
+              <tr><td>Payback Simples Estimado</td><td><span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span></td><td><span class="badge-warn">6.63 anos (~6 anos e 8 meses)</span></td></tr>
+            </tbody>
+          </table>
+          <div class="callout">
+            <h3>Questao Final da Sprint Review (Secao 9) - Analise Tecnica e Economica</h3>
+            <p style="white-space: pre-line;">Para a residencia analisada (consumo de 455.31 kWh/mes ou 15.18 kWh/dia em São Paulo/SP, HSP = 5.00 kWh/m2/dia, PR = 78%), o sistema SEM ARMAZENAMENTO (On-Grid) e a solucao que faz mais sentido sob a otica tecnico-economica para um consumidor residencial conectado a rede urbana confiavel.
+  1) Desempenho Tecnico e Geracao: Ambos os cenarios instalam 4.050 kWp (10 modulos Trina Solar TSM-405DE09 (Vertex S) de 405 Wp) e geram 473.85 kWh/mes (15.79 kWh/dia), atendendo 104.1% do consumo mensal com 455.31 kWh/mes efetivamente compensados.
+  2) Impacto dos Equipamentos e Armazenamento: A opcao COM BATERIAS exige substituir o inversor on-grid (Growatt MIC 3000TL-X, R$ 1589.00) por um inversor hibrido (Deye SUN-5K-SG04LP1-EU-SM2, R$ 7859.00) e adicionar 2 bateria(s) Deye SE-F5 (10.24 kWh nominais / 9.22 kWh uteis, custo de R$ 12300.00) para garantir 12 h de autonomia (7.59 kWh).
+  3) Viabilidade Economica e Payback Simples: Como na modalidade de compensacao de creditos (GD) a economia na conta de luz e identica nos dois cenarios (R$ 418.89/mes ou R$ 5026.68/ano a tarifa de R$ 0.92/kWh), o investimento total salta de R$ 11590.88 (Sem Baterias) para R$ 33317.78 (Com Baterias), um acrescimo de R$ 21726.90 (+187.4%). Isso eleva o Payback Simples de 2.31 anos para 6.63 anos (+4.32 anos). Portanto, o sistema com baterias so se justifica caso a residencia sofra interrupcoes frequentes da concessionaria ou possua cargas criticas que exijam nobreak solar de 12 h.</p>
+          </div>
+        </section>
+        
+
+    <footer>
+      Sistema de Dimensionamento Energetico Residencial - Equipe Lumos (FIAP 2026) | Pietro Lorande (RM 569125), Luiz Otavio Brito Freixo (RM 569977), Maria Eduarda Lemos (RM 574094)
+    </footer>
+  </div>
+</body>
+</html>

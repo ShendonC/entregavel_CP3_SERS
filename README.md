@@ -1,269 +1,169 @@
-# entregavel_CP2_SERS
-Continuação do checkpoint 1 
+﻿# CP3 - Finalizacao Sistema de Orcamento Fotovoltaico (Sprint 3 - Product Backlog Final)
+Continuacao dos Checkpoints 1 e 2 - Disciplina: Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves)
 
+## INTEGRANTES (Equipe Lumos - FIAP)
 
-INTEGRANTES 
-
-Pietro Lorande | RM569125
-
-
-Luiz otavio britto freixo | RM 569977
-
-
-Maria Eduarda Lemos | RM574094
+- **Pietro Lorande** | RM 569125
+- **Luiz Otavio Brito Freixo (Luiz Otavio Britto Freixo)** | RM 569977
+- **Maria Eduarda Lemos** | RM 574094
 
 ---
 
+## LINKS DO PROJETO E KANBAN (SPRINTS 1, 2 E 3)
 
-LINK ENTREGAVEL CP1: https://github.com/pietrolorande01-ELFzen/entregavel_CP1_sustentabilidade/tree/main
-
-link trello CP 1 : https://trello.com/invite/b/6a9b6947fa36b4d757bfadbf/ATTIf06135456fb1670e8f819b23dc4bacdf5FFB6243/sprintsers
-
+- **Entregavel CP1 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP1_sustentabilidade/tree/main
+- **Kanban / Trello CP1:** https://trello.com/invite/b/6a9b6947fa36b4d757bfadbf/ATTIf06135456fb1670e8f819b23dc4bacdf5FFB6243/sprintsers
+- **Entregavel CP2 / Base CP3 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP2_SERS
+- **Kanban / Trello CP2 & Sprint 3:** https://trello.com/invite/b/6aade675e4a2fddaa89bc71b/ATTI83a4196a19136758446b9c08d9516198BBE75C3E/cp02-sers20
 
 ---
 
-LINK ENTREGAVEL CP2: https://github.com/pietrolorande01-ELFzen/entregavel_CP2_SERS
+# Sistema de Dimensionamento Energetico Residencial - Evolucao Fotovoltaica (Sprint 3 Final)
 
-Link trello CP 2 : https://trello.com/invite/b/6aade675e4a2fddaa89bc71b/ATTI83a4196a19136758446b9c08d9516198BBE75C3E/cp02-sers20
+**Equipe Lumos · FIAP · Ciencia da Computacao / Analise e Desenvolvimento de Sistemas**
 
-
-
-
-# Sistema de Dimensionamento Energético Residencial — Evolução Fotovoltaica
-
-**Equipe Lumos · FIAP · Análise e Desenvolvimento de Sistemas**
-
-Sistema de terminal em Python que cadastra usuários, imóveis e equipamentos, calcula o consumo de energia do imóvel e, nesta etapa, faz o **pré-dimensionamento de um sistema de energia solar**: quantos painéis, qual inversor, baterias opcionais, verificação de compatibilidade técnica e orçamento estimado, tudo apresentado numa proposta preliminar ao cliente.
+Sistema integrado em Python que cadastra usuarios, residencias e equipamentos eletricos, calcula a demanda energetica do imovel (`E_mes`, `E_dia` e potencia instalada em `W`/`kW`) e realiza o **dimensionamento completo de geracao solar fotovoltaica (PB01 a PB21)**: selecao de modulos, inversores e baterias em datasets estruturados, verificacao de compatibilidade tecnica (regras C1 a C8), estimativa de geracao diaria e mensal, comparacao geracao x consumo (distinguindo energia compensada e excedente), orcamento detalhado (com preco unitario, subtotal e total), estimativa de economia mensal/anual, **payback simples**, comparacao lado a lado entre solucao **sem baterias (On-Grid)** e **com baterias (Hibrido)** e exportacao da proposta final em relatorio `.txt` e pagina web `.html`.
 
 ---
 
 ## 1. Como executar
 
-Requer **Python 3.9 ou superior**. Não precisa instalar nenhuma biblioteca (só usa a biblioteca padrão).
+Requer **Python 3.9 ou superior** (utiliza apenas a biblioteca padrao do Python, sem necessidade de `pip install`).
 
 ```bash
-# Usar o sistema normalmente
+# 1. Usar o sistema interativo pelo menu completo (conta pronta: demo@lumos.com / senha: 1234)
 python sistema_analise_casa.py
 
-# Rodar todos os testes automatizados, sem interação
+# 2. Executar direto o roteiro completo da Sprint Review (15 itens + Questao 9 + exportacao HTML/TXT)
+python sistema_analise_casa.py --demo
+
+# 3. Rodar todos os testes automatizados (CP1 + CP2 + Sprint 3 Final), sem interacao
 python testes.py
 ```
 
-> Os três arquivos `.py` e a pasta `dados_fv/` precisam ficar **na mesma pasta**.
-> Se a pasta `dados_fv/` não estiver lá, a parte solar avisa qual arquivo está faltando (o restante do sistema continua funcionando).
+> Os arquivos `.csv` ficam disponiveis tanto na pasta `dados_fv/` quanto na raiz do projeto, garantindo funcionamento imediato em qualquer ambiente.
 
 ---
 
 ## 2. Estrutura dos arquivos
 
 ```
-📁 projeto/
-├── sistema_analise_casa.py     ← telas, menus e dados do usuário (é o que se executa)
-├── fotovoltaico.py             ← cálculos e regras da parte solar
-├── testes.py                   ← testes automatizados
-├── dados_sistema.json          ← criado ao usar o sistema (usuários, imóveis, etc.)
-└── 📁 dados_fv/                ← bases de dados da parte solar
-    ├── modulos.csv             ← 10 painéis solares
-    ├── inversores.csv          ← 8 inversores
-    ├── baterias.csv            ← 6 baterias
-    └── hsp_localidades.csv     ← quanto sol cada cidade recebe
+projeto/
+├── sistema_analise_casa.py     <- telas, menus, persistencia JSON e roteiro da Sprint Review
+├── fotovoltaico.py             <- motor de dimensionamento FV, datasets, comparacao, orcamento e payback
+├── testes.py                   <- bateria de testes automatizados (CP1 + CP2 + Sprint 3 PB01-PB21)
+├── dados_sistema.json          <- banco persistente com residencia pre-cadastrada e cenarios salvos (PB01/PB20)
+├── proposta_cliente.txt        <- relatorio consolidado exportado automaticamente (PB17/PB21)
+├── proposta_cliente.html       <- pagina web consolidada da proposta e comparacao de cenarios (PB19/PB21)
+└── dados_fv/                   <- datasets estruturados e rastreaveis da parte solar (PB05/PB07/PB12)
+    ├── modulos.csv             <- 10 modulos fotovoltaicos reais com precos e fontes
+    ├── inversores.csv          <- 8 inversores (on-grid e hibridos) com limites eletricos, MPPT e eficiencia
+    ├── baterias.csv            <- 6 baterias LiFePO4 com tensao, Ah, kWh, DoD, ciclos e preco
+    └── hsp_localidades.csv     <- irradiacao solar (HSP) por municipio brasileiro (CRESESB/INPE SunData)
 ```
 
 ---
 
-## 3. Os arquivos de código
+## 3. Rastreabilidade do Product Backlog Final - Sprint 3 (PB01 a PB21)
 
-O código está dividido em três arquivos, cada um com uma responsabilidade:
-
-| Arquivo | O que tem | Conversa com o usuário? |
+| Item | User Story / Requisito da Sprint 3 | Onde esta implementado |
 |---|---|---|
-| `sistema_analise_casa.py` | Etapa anterior inteira (PB01 a PB18), as **telas** da parte solar e os menus. É o arquivo que se executa. | Sim |
-| `fotovoltaico.py` | **Regras** da parte solar: leitura dos CSVs, fórmulas, compatibilidade, seleção, orçamento e texto da proposta. | Não — só recebe dados e devolve resultados |
-| `testes.py` | Testes automatizados da etapa anterior e da sprint solar. | Não |
+| **PB01** | Recuperacao da residencia ja cadastrada (sem exigir recadastro) | `sistema_analise_casa.py` (`selecionar_imovel_do_usuario`, `popular_residencia_demonstracao`, `dados_sistema.json`) |
+| **PB02** | Recuperacao da demanda energetica (`E_dia = E_mes / 30`, `E_mes` em kWh e potencia instalada em W/kW) | `fotovoltaico.py` (`demanda_energetica_residencia`, `consumo_diario`) e `sistema_analise_casa.py` (`potencia_instalada_imovel`, `exibir_relatorio`) |
+| **PB03** | Recurso solar (HSP com fonte + Performance Ratio `PR = 0,78` informado e justificado) | `fotovoltaico.py` (`PARAMETROS_FV`, `obter_hsp`, `validar_hsp`, `validar_pr`) |
+| **PB04** | Calculo da potencia fotovoltaica necessaria (`P_FV = E_dia / (HSP * PR)` em kWp) | `fotovoltaico.py` (`potencia_fv_por_consumo_diario`, `potencia_fv_necessaria`) |
+| **PB05** | Consulta ao dataset estruturado de modulos fotovoltaicos (`modulos.csv`) | `fotovoltaico.py` (`carregar_dataset("modulos")`) e `sistema_analise_casa.py` (`exibir_catalogo_datasets_fv`) |
+| **PB06** | Dimensionamento dos modulos (`N_mod = teto[(P_FV * 1000) / P_mod]` e `P_inst = (N_mod * P_mod) / 1000`) | `fotovoltaico.py` (`quantidade_minima_modulos`, `potencia_instalada`, `verificar_modulo_inversor`) |
+| **PB07** | Selecao do inversor compativel (`R_DC/AC = P_FV_instalada / P_inversor`, MPPT, tensao, corrente, eficiencia) | `fotovoltaico.py` (`verificar_modulo_inversor`, `selecionar_modulo_inversor`) e `inversores.csv` |
+| **PB08** | Estimativa da geracao fotovoltaica diaria (`E_gerada,dia = P_inst * HSP * PR`) e mensal (`E_gerada,mes = E_gerada,dia * 30`) | `fotovoltaico.py` (`geracao_estimada_diaria`, `geracao_estimada_mensal`) |
+| **PB09** | Comparacao geracao x consumo (`Atendimento (%) = (E_gerada,mes / E_consumida,mes) * 100`, distinguindo compensada vs excedente) | `fotovoltaico.py` (`comparar_geracao_consumo`) |
+| **PB10** | Opcao de sistema sem baterias (On-Grid) ou com baterias (Hibrido) | `fotovoltaico.py` (`dimensionar_fv`) e `sistema_analise_casa.py` (`novo_dimensionamento_fv`) |
+| **PB11** | Dimensionamento das baterias (`C_bat = E_aut / (DoD * eta_bat)` e `N_bat = teto(C_bat / C_unidade)`) | `fotovoltaico.py` (`energia_autonomia`, `capacidade_bateria_necessaria`, `quantidade_baterias`, `selecionar_bateria`) |
+| **PB12** | Dataset estruturado e rastreavel de baterias (`baterias.csv`) | `fotovoltaico.py` (`carregar_dataset("baterias")`) e `baterias.csv` |
+| **PB13** | Geracao automatica do orcamento (`Custo_item = qtd * preco_unitario` e `Custo_total = Soma(Custo_item)`) | `fotovoltaico.py` (`calcular_orcamento`) |
+| **PB14** | Comparacao lado a lado dos cenarios (Sem Baterias vs Com Baterias) | `fotovoltaico.py` (`comparar_cenarios`, `formatar_comparacao_cenarios`) e `sistema_analise_casa.py` (`tela_comparar_cenarios_fv`) |
+| **PB15** | Estimativa de economia mensal e anual (`Economia_mensal = E_compensada * tarifa`) | `fotovoltaico.py` (`calcular_economia`) |
+| **PB16** | Payback simples (`Payback = Investimento / Economia_anual`, explicitamente indicado como estimativa preliminar) | `fotovoltaico.py` (`calcular_payback_simples`) |
+| **PB17** | Tela e relatorio consolidado da proposta completa | `fotovoltaico.py` (`formatar_proposta`) |
+| **PB18** | Validacao de dados e tratamento de erros compreensiveis ao usuario | `fotovoltaico.py` (`positivo`, `validar_hsp`, `validar_pr`, `validar_tarifa`, `ErroDimensionamento`) |
+| **PB19** | Interface integrada (fluxo completo sem edicao de codigo ou calculos externos) | `sistema_analise_casa.py` (`menu_residencia`, `novo_dimensionamento_fv`, `--demo`) e `proposta_cliente.html` |
+| **PB20** | Persistencia completa do projeto em `dados_sistema.json` | `sistema_analise_casa.py` (`salvar_dimensionamento_no_banco`, `listar_dimensionamentos_fv`) |
+| **PB21** | Exportacao da proposta para apresentacao ao cliente (`.txt` e `.html`) | `fotovoltaico.py` (`exportar_proposta_txt`, `exportar_proposta_html`) |
 
-Essa separação deixa as contas testáveis sem precisar digitar nada: `testes.py` chama direto as funções de `fotovoltaico.py`. No `sistema_analise_casa.py`, tudo que vem da parte solar aparece com o prefixo `fv.` (ex.: `fv.dimensionar_fv(...)`), então dá para ver na hora de qual arquivo a função vem.
+---
 
-### `sistema_analise_casa.py` — etapa anterior (PB01 a PB18) e telas
+## 4. Formulas implementadas no motor (`fotovoltaico.py`)
 
-É o sistema que já existia: cadastro e login de usuário (com senha criptografada), cadastro de imóveis, cadastro de equipamentos, associação de equipamentos ao imóvel, cálculo de consumo mensal, ranking, resumo e gráfico. Tudo é salvo em `dados_sistema.json`.
-
-**Funções auxiliares** no início do arquivo (`ler`, `ler_validado`, `ler_sim_nao`, `confirmar`, `concluir`, `executar_menu`) concentram as perguntas, validações e menus, para não repetir o mesmo laço `while True` em cada tela.
-
-**O que mudou nesta parte:**
-- O cadastro de imóvel agora pede **cidade e UF** (necessário para saber quanto sol a região recebe).
-- A edição de imóvel ganhou a opção **5. Localização**.
-- Ao excluir um imóvel, os dimensionamentos solares dele também são apagados.
-- O menu de residências ganhou a opção **6. Energia Solar Fotovoltaica**.
-- As **telas da parte solar** ficam aqui (`novo_dimensionamento_fv`, `listar_dimensionamentos_fv`, `tela_validar_datasets`): fazem as perguntas (localização, consumo, percentual, baterias), chamam `fotovoltaico.py` e salvam o cenário no JSON. Tasks FV-PB01-T01, PB02-T01/T03/T04, PB06-T01/T02, PB08-T05, PB10-T02.
-
-### `fotovoltaico.py` — Evolução Fotovoltaica (sprint FV)
-
-> **Sobre a numeração:** o CSV de tasks do Trello desta sprint recomeça em PB01, número que já existe no backlog anterior. Para não confundir, todo comentário da parte solar usa o prefixo **`FV-`**. Exemplo: `FV-PB04-T05` é o cartão "PB04 - T05" do Trello da sprint solar. Use Ctrl+F no código para achar qualquer cartão.
-
-O arquivo segue esta ordem:
-
-| Bloco | O que faz | Tasks |
+| Formula | Descricao | Funcao em `fotovoltaico.py` |
 |---|---|---|
-| **Parâmetros** (`PARAMETROS_FV`) | Números fixos adotados pela equipe: 30 dias, eficiência 0,78, margens de tensão, % de outros custos. A fonte de cada valor está no comentário ao lado. | FV-PB03-T03, FV-PB09-T03 |
-| **Schemas** (`DATASETS_FV`) | Para cada CSV: nome do arquivo, quantidade mínima, campos de texto e campos numéricos obrigatórios. | FV-PB04-T01, PB05-T01, PB07-T01, PB11-T01 |
-| **Leitura dos CSVs** | Lê os arquivos, converte os números e separa linhas válidas das pendentes (incompletas, sem preço ou sem link). | FV-PB04-T03, PB05-T03, PB07-T03, PB11-T06 |
-| **Validação dos datasets** | Confere quantidade mínima (10/8/6), IDs repetidos, link da fonte e data de coleta. | FV-PB11-T08 |
-| **Fórmulas** | Uma função para cada fórmula do enunciado. Só fazem conta, sem perguntar nada ao usuário. | FV-PB02, PB03, PB04, PB06, PB07 |
-| **HSP da localização** | Busca o sol da cidade na tabela. Se a cidade não estiver lá, aceita um valor digitado **desde que venha com a fonte**. | FV-PB01-T04 |
-| **Compatibilidade** | Testa se o painel funciona com o inversor e se a bateria funciona com o inversor (regras C1 a C8). | FV-PB05, PB08 |
-| **Seleção** | Testa todas as combinações painel × inversor, descarta as incompatíveis e escolhe a mais barata entre as que sobraram. | FV-PB04-T04, PB05-T06 |
-| **Orçamento** | Soma preços dos equipamentos, calcula outros custos e o total. | FV-PB09 |
-| **Dimensionamento** (`dimensionar_fv`) | O "chefe": chama tudo acima na ordem certa e junta o resultado. | FV-PB03, PB06-T06, PB10-T01 |
-| **Proposta** (`formatar_proposta`) | Monta o texto que o cliente vê. | FV-PB10 |
+| `E_dia = E_mes / 30` | Consumo medio diario da residencia (kWh/dia) | `consumo_diario` / `demanda_energetica_residencia` |
+| `E_FV = Cm * f` | Energia mensal que o sistema deve atender (kWh/mes) | `energia_mensal_desejada` |
+| `P_FV = E_dia / (HSP * PR)` | Potencia fotovoltaica necessaria (kWp) | `potencia_fv_por_consumo_diario` / `potencia_fv_necessaria` |
+| `N_mod = teto[(P_FV * 1000) / P_mod]` | Quantidade minima de modulos fotovoltaicos | `quantidade_minima_modulos` |
+| `P_inst = (N_mod * P_mod) / 1000` | Potencia efetivamente instalada (kWp) | `potencia_instalada` |
+| `R_DC/AC = P_FV_instalada / P_inversor` | Razao de carregamento DC/AC do inversor | `verificar_modulo_inversor` |
+| `E_gerada,dia = P_inst * HSP * PR` | Geracao fotovoltaica diaria estimada (kWh/dia) | `geracao_estimada_diaria` |
+| `E_gerada,mes = E_gerada,dia * 30` | Geracao fotovoltaica mensal estimada (kWh/mes) | `geracao_estimada_mensal` |
+| `Atendimento (%) = (E_gerada,mes / E_consumida,mes) * 100` | Percentual de atendimento da demanda mensal | `comparar_geracao_consumo` |
+| `E_compensada = min(E_gerada,mes, E_consumida,mes)` | Energia efetivamente compensada na fatura mensal | `comparar_geracao_consumo` |
+| `E_aut = E_dia * (A / 24)` | Energia necessaria para `A` horas de autonomia (kWh) | `energia_autonomia` |
+| `C_bat = E_aut / (DoD * eta_bat)` | Capacidade nominal de banco de baterias necessaria (kWh) | `capacidade_bateria_necessaria` |
+| `N_bat = teto(C_bat / C_unidade)` | Quantidade de baterias necessarias | `quantidade_baterias` |
+| `Custo_item = quantidade * preco_unitario` | Subtotal de cada equipamento do orcamento (R$) | `calcular_orcamento` |
+| `Custo_total = Soma(Custo_item)` | Somatorio do orcamento de equipamentos e instalacao (R$) | `calcular_orcamento` |
+| `Economia_mensal = E_compensada * tarifa` | Economia financeira mensal estimada na conta de luz (R$/mes) | `calcular_economia` |
+| `Economia_anual = Economia_mensal * 12` | Economia financeira anual estimada (R$/ano) | `calcular_economia` |
+| `Payback = Investimento / Economia_anual` | Tempo de retorno simples do investimento (anos) | `calcular_payback_simples` |
 
-### Fórmulas implementadas
+---
 
-| Fórmula | O que calcula | Função |
+## 5. Regras de compatibilidade eletrica (C1 a C8)
+
+| Regra | Verificacao Tecnica | Objetivo |
 |---|---|---|
-| `E_FV = Cm × f` | Energia que o cliente quer gerar por mês | `energia_mensal_desejada` |
-| `P_FV = E_FV / (HSP × D × η)` | Potência solar necessária (kWp) | `potencia_fv_necessaria` |
-| `N = ⌈(P_FV × 1000) / P_módulo⌉` | Quantidade mínima de painéis | `quantidade_minima_modulos` |
-| `P_instalada = N × P_módulo / 1000` | Potência realmente instalada | `potencia_instalada` |
-| `E_gerada = P_instalada × HSP × D × η` | Geração estimada por mês | `geracao_estimada_mensal` |
-| `E_d = Cm / 30` | Consumo médio por dia | `consumo_diario` |
-| `E_autonomia = E_d × A / 24` | Energia para as horas de autonomia | `energia_autonomia` |
-| `C_bat = E_autonomia / (DoD × η_bat)` | Capacidade nominal de bateria necessária | `capacidade_bateria_necessaria` |
-| `C_útil = C_nominal × DoD` | Quanto de uma bateria pode ser usado | `capacidade_util` |
-| `N_bat = ⌈C_necessária / C_útil⌉` | Quantidade de baterias | `quantidade_baterias` |
+| **C1** | `Voc_string * 1,10 <= tensao_max_entrada_v` | Protege o inversor contra sobretensao de circuito aberto em dias frios |
+| **C2** | `Vmp_string <= faixa_mppt_max_v` | Garante que a tensao de operacao da string nao ultrapasse o teto do MPPT |
+| **C3** | `Vmp_string * 0,90 >= faixa_mppt_min_v` | Garante que em dias quentes a tensao da string nao caia abaixo da partida do MPPT |
+| **C4** | `Imp_string <= corrente_max_entrada_a` | Garante que a corrente dos modulos respeite o limite por entrada MPPT |
+| **C5** | `P_instalada * 1000 <= potencia_max_fv_w` | Impede que a potencia total de paineis exceda o limite CC do inversor |
+| **C6** | `ratio_min <= R_DC/AC <= 1,35` | Mantem a relacao `P_FV_instalada / P_inversor` na faixa otima de rendimento |
+| **C7** | `com_bateria -> compativel_bateria == SIM` | Exige inversor hibrido sempre que o cliente optar por armazenamento |
+| **C8** | `tensao_bateria_min_v <= V_bat <= tensao_bateria_max_v` | Garante compatibilidade de barramento CC entre o banco LiFePO4 e o inversor hibrido |
 
-**Legenda:** Cm = consumo mensal · f = percentual de atendimento (80% → 0,8) · HSP = horas de sol pleno · D = 30 dias · η = eficiência global (0,78) · A = autonomia em horas · DoD = profundidade de descarga · η_bat = eficiência da bateria (0,95).
+---
 
-**Observação sobre N_bat:** se a conta usasse `C_bat` (já dividido pelo DoD) contra `C_útil` (já multiplicado pelo DoD), o DoD seria aplicado duas vezes e o sistema compraria baterias demais. Por isso usamos `C_necessária = E_autonomia / η_bat`. Um teste confirma que isso dá o mesmo resultado que `⌈C_bat / C_nominal⌉`.
+## 6. Resposta Fundamentada a Questao Final da Sprint Review (Secao 9)
 
-**Observação sobre N:** o N da fórmula é o mínimo. O sistema divide os painéis no menor número possível de fileiras (strings) iguais que caibam na tensão do inversor; por isso o N final às vezes fica um pouco acima do mínimo. A proposta mostra os dois valores.
+> **Pergunta (Secao 9 do Enunciado):** *Para a residencia utilizada na demonstracao, qual solucao faz mais sentido: sistema fotovoltaico sem armazenamento ou sistema com baterias? Quais resultados tecnicos e economicos do projeto sustentam a analise?*
 
-### Regras de compatibilidade (C1 a C8)
+### Caso Demonstrado: `Residencia Familia Silva (SP)` - Sao Paulo/SP
 
-| Regra | O que verifica | Em palavras simples |
+1. **Demanda Energetica da Residencia (PB01 / PB02):**
+   - **Potencia instalada das cargas da residencia:** `9.963 W` (`9,963 kW`) distribuidos em 8 grupos de equipamentos (chuveiro eletrico, ar-condicionado, geladeira, micro-ondas, maquina de lavar, computador, TVs e iluminacao LED).
+   - **Consumo mensal calculado (`E_mes`):** `455,31 kWh/mes`.
+   - **Consumo medio diario (`E_dia = E_mes / 30`):** `15,18 kWh/dia`.
+   - **Recurso solar local (PB03):** Sao Paulo/SP com `HSP = 5,00 kWh/m2/dia` (fonte: CRESESB/SunData) e Performance Ratio `PR = 0,78 (78%)`.
+
+2. **Quadro Comparativo Obtido pelo Sistema (PB14):**
+
+| Indicador Tecnico / Economico | Cenario 1: Sem Baterias (On-Grid) | Cenario 2: Com Baterias (Hibrido - 12h) |
 |---|---|---|
-| C1 | `Voc da string × 1,10 ≤ tensão máx. do inversor` | Em dia frio a tensão sobe; não pode queimar o inversor |
-| C2 | `Vmp da string ≤ faixa MPPT máxima` | A tensão de trabalho cabe na faixa do inversor |
-| C3 | `Vmp da string × 0,90 ≥ faixa MPPT mínima` | Em dia quente a tensão cai; não pode ficar abaixo do mínimo |
-| C4 | `corrente do painel ≤ corrente máx. por entrada` | O inversor aguenta a corrente dos painéis |
-| C5 | `potência instalada ≤ potência FV máx. do inversor` | Não passa do limite de painéis do inversor |
-| C6 | `razão DC/AC dentro da faixa` | Inversor nem pequeno nem grande demais para os painéis |
-| C7 | com bateria → inversor híbrido | Inversor comum (on-grid) não aceita bateria |
-| C8 | tensão da bateria dentro da faixa do inversor | A bateria "conversa" com o inversor |
+| **Potencia FV Calculada (`P_FV`)** | `3,892 kWp` | `3,892 kWp` |
+| **Potencia FV Instalada (`P_inst`)** | `4,050 kWp` | `4,050 kWp` |
+| **Modulos Selecionados (`modulos.csv`)** | `10x [FV006] Trina Solar TSM-405DE09 (405 Wp)` (`R$ 590,32/un`) | `10x [FV006] Trina Solar TSM-405DE09 (405 Wp)` (`R$ 590,32/un`) |
+| **Inversor Selecionado (`inversores.csv`)** | `[INV001] Growatt MIC 3000TL-X` (On-Grid, `3.000 W`, efic. `97,6%`, `R_DC/AC = 1,35`, `R$ 1.589,00`) | `[INV006] Deye SUN-5K-SG04LP1-EU-SM2` (Hibrido, `5.000 W`, efic. `97,6%`, `R_DC/AC = 0,81`, `R$ 7.859,00`) |
+| **Geracao Estimada (Dia / Mes)** | `15,79 kWh/dia` / `473,85 kWh/mes` | `15,79 kWh/dia` / `473,85 kWh/mes` |
+| **Atendimento da Demanda (`PB09`)** | `104,1%` (`455,31 kWh/mes` compensados + `18,54 kWh/mes` excedente) | `104,1%` (`455,31 kWh/mes` compensados + `18,54 kWh/mes` excedente) |
+| **Banco de Baterias (`baterias.csv`)** | Nao possui (`0 kWh`) | `2x [BAT005] Deye SE-F5 LiFePO4` (`51,2 V`, `100 Ah`, `5,12 kWh`, DoD `90%`, `R$ 6.150,00/un`) |
+| **Capacidade Armazenada e Autonomia** | `0 kWh` / `0 h` de autonomia | `10,24 kWh` nominais (`9,22 kWh` uteis) para `12,0 h` de autonomia (`E_aut = 7,59 kWh`, `C_bat = 8,88 kWh`) |
+| **Custo dos Equipamentos (`PB13`)** | `R$ 7.492,20` | `R$ 26.062,20` |
+| **Outros Custos e Instalacao** | `R$ 4.098,68` | `R$ 7.255,58` |
+| **Investimento Total Estimado** | **`R$ 11.590,88`** | **`R$ 33.317,78`** (`+R$ 21.726,90` / `+187,4%`) |
+| **Economia Mensal (`R$ 0,92/kWh`)** | `R$ 418,89 / mes` | `R$ 418,89 / mes` |
+| **Economia Anual Estimada (`PB15`)** | `R$ 5.026,68 / ano` | `R$ 5.026,68 / ano` |
+| **Payback Simples Estimado (`PB16`)** | **`2,31 anos (~2 anos e 4 meses)`** | **`6,63 anos (~6 anos e 8 meses)`** |
 
-Combinações que falham em qualquer regra são **bloqueadas**, e o sistema mostra o motivo de cada bloqueio.
-
----
-
-## 4. Os arquivos CSV (`dados_fv/`)
-
-Todos seguem as mesmas convenções:
-- **Separador:** vírgula. **Decimal:** ponto (ex.: `21.3`).
-- **Unidade no nome da coluna:** `_w` = watts, `_wp` = watt-pico, `_v` = volts, `_a` = ampères, `_kwh` = quilowatt-hora, `_pct` = porcentagem, `_brl` = reais.
-- **Data:** formato `AAAA-MM-DD`.
-- Podem ser abertos e editados no Excel. O sistema lê a versão que estiver na pasta.
-
-### Colunas de rastreabilidade (presentes nos três CSVs de equipamentos)
-
-| Coluna | Significado |
-|---|---|
-| `preco_brl` | Preço exibido na loja na data de coleta |
-| `fornecedor` | Loja onde o preço foi coletado |
-| `data_coleta` | Dia em que o preço foi consultado |
-| `url_fonte` | Link da página do produto |
-| `fonte_especificacao` | De onde vieram os dados técnicos (datasheet do fabricante ou página da loja) |
-| `status_validacao` | Situação da conferência (ver tabela abaixo) |
-
-| Status | Significado |
-|---|---|
-| `OK_PAGINA` | Dados conferidos na página da fonte |
-| `CONFERIR_DATASHEET` | Dados técnicos transcritos do datasheet; **abrir o PDF e confirmar antes da entrega** |
-| `CONFERIR_PRECO` | Produto indisponível ou preço possivelmente desatualizado |
-
-Uma linha **sem preço ou com campo obrigatório vazio** não quebra o sistema: ela fica como "pendente" e é ignorada nos cálculos (aparece no relatório de validação).
-
-### `modulos.csv` — painéis solares (10 itens, mínimo exigido: 10)
-
-| Coluna | Significado |
-|---|---|
-| `id` | Código interno (FV001...) |
-| `fabricante`, `modelo` | Identificação do painel |
-| `potencia_wp` | Potência do painel em watt-pico |
-| `voc_v` | Tensão de circuito aberto (usada na regra C1) |
-| `isc_a` | Corrente de curto-circuito |
-| `vmp_v` | Tensão de máxima potência (regras C2 e C3) |
-| `imp_a` | Corrente de máxima potência (regra C4) |
-| `eficiencia_pct` | Eficiência do painel |
-
-### `inversores.csv` — inversores (8 itens, mínimo exigido: 8)
-
-| Coluna | Significado |
-|---|---|
-| `tipo` | `on-grid` (só rede) ou `hibrido` (aceita bateria) |
-| `potencia_nominal_w` | Potência de saída do inversor |
-| `potencia_max_fv_w` | Máximo de painéis que pode receber (regra C5) |
-| `tensao_max_entrada_v` | Tensão máxima de entrada (regra C1) |
-| `faixa_mppt_min_v`, `faixa_mppt_max_v` | Faixa de tensão de trabalho (regras C2 e C3) |
-| `corrente_max_entrada_a` | Corrente máxima por entrada (regra C4) |
-| `numero_mppt` | Quantas entradas independentes o inversor tem |
-| `strings_por_mppt` | Quantas fileiras podem ser ligadas em cada entrada |
-| `compativel_bateria` | `SIM` ou `NAO` (regra C7) |
-| `tensao_bateria_min_v`, `tensao_bateria_max_v` | Faixa de tensão de bateria aceita (regra C8); `0` em inversores on-grid |
-
-> Os campos `strings_por_mppt` e `tensao_bateria_*` não estavam no schema da task FV-PB05-T01, mas foram acrescentados porque sem eles é impossível verificar a compatibilidade com baterias (FV-PB08-T03).
-
-### `baterias.csv` — baterias (6 itens, mínimo exigido: 6)
-
-| Coluna | Significado |
-|---|---|
-| `tecnologia` | Química da bateria (todas LiFePO4) |
-| `tensao_nominal_v` | Tensão da bateria (regra C8) |
-| `capacidade_ah` | Capacidade em ampère-hora |
-| `capacidade_kwh` | Capacidade nominal em kWh (usada no cálculo) |
-| `dod_pct` | Profundidade de descarga: quanto % pode ser usado sem danificar |
-| `ciclos` | Vida útil em ciclos de carga/descarga |
-
-### `hsp_localidades.csv` — recurso solar por cidade
-
-| Coluna | Significado |
-|---|---|
-| `cidade`, `uf` | Localidade (a busca ignora acentos e maiúsculas) |
-| `hsp_kwh_m2_dia` | Horas de sol pleno: média diária de energia solar na região |
-| `fonte`, `url_fonte` | Origem do dado (base CRESESB/SunData, Atlas Brasileiro de Energia Solar 2017) |
-
-Para uma cidade que não está na tabela, o sistema pede o HSP **e a fonte** (ex.: "CRESESB SunData - Osasco/SP"). Valores fora de 3,0 a 7,0 são rejeitados.
-
----
-
-## 5. Como usar a parte solar
-
-1. Cadastre-se e faça login.
-2. Cadastre um imóvel (com cidade/UF) e associe os equipamentos dele.
-3. No menu de residências, escolha **6. Energia Solar Fotovoltaica → 1. Novo dimensionamento**.
-4. Responda: consumo de referência (calculado pelo sistema ou média da conta de luz), percentual a atender e se quer baterias (e quantas horas de autonomia). O sistema escolhe sozinho a combinação compatível mais barata.
-5. O sistema mostra a **proposta preliminar** com 8 seções: consumo e meta, recurso solar, geração, módulos, inversor, armazenamento, orçamento e origem dos preços.
-6. O dimensionamento é salvo e pode ser revisto na opção **2**. A opção **3** roda a validação dos datasets.
-
----
-
-## 6. Testes
-
-`python testes.py` executa:
-- os testes de cálculo da etapa anterior;
-- **11 grupos de teste da sprint solar**, um para cada task "Testar..." do Trello (FV-PB01-T07, PB02-T05, PB03-T07, PB04-T08, PB05-T07, PB06-T07, PB07-T07, PB08-T06, PB09-T07, PB10-T06, PB11-T08);
-- o relatório de validação dos datasets.
-
-Os testes não alteram o `dados_sistema.json`. A mesma bateria de testes está no menu inicial, opção **3**.
-
----
-
-## 7. Decisões tomadas sobre as especificações
-
-| Ponto | Decisão |
-|---|---|
-| FV-PB04-T02 cita `paineis.csv`, FV-PB11 exige `modulos.csv` | Padronizado `modulos.csv` |
-| FV-PB02-T02 diz "0 a 100%" | Aceito **maior que 0 e até 100**, pois 0% zera a potência e não gera sistema |
-| Fórmula de N_bat aplicaria o DoD duas vezes | Usada `C_necessária = E_autonomia / η_bat` (ver seção 3) |
-| Inversor "não considerar apenas preço" | Preço só decide **entre as combinações que passaram nas regras técnicas** |
-| Outros custos (FV-PB09-T03) | Estrutura 8%, cabos 4%, proteções 5%, instalação R$ 500/kWp, projeto R$ 800 — premissas da equipe, mostradas separadas do custo de equipamentos |
-
----
+3. **Conclusao Tecnica e Economica:**
+   - Para a residencia demonstrada, **a solucao que faz mais sentido e o Sistema Fotovoltaico Sem Armazenamento (On-Grid)**.
+   - **Sustentacao pelos dados do projeto:** Ambos os sistemas entregam exatamente a mesma geracao fotovoltaica (`473,85 kWh/mes`, cobrindo `100%` dos `455,31 kWh/mes` consumidos pela casa e gerando a mesma economia de `R$ 418,89/mes` ou `R$ 5.026,68/ano`). Contudo, a inclusao de armazenamento para `12 horas` de autonomia (`7,59 kWh`) exige trocar o inversor on-grid (`R$ 1.589,00`) por um inversor hibrido (`R$ 7.859,00`) e adquirir `2 baterias LiFePO4 Deye SE-F5` (`R$ 12.300,00`), elevando o investimento total de **`R$ 11.590,88` para `R$ 33.317,78`** (quase o triplo do valor, `+187,4%`) sem aumentar a economia mensal na fatura.
+   - Consequentemente, o **Payback Simples** salta de **`2,31 anos`** (excelente retorno financeiro) para **`6,63 anos`** (`+4,32 anos` adicionais). Assim, em uma area urbana atendida pela rede da concessionaria (Sao Paulo/SP), o sistema On-Grid sem baterias oferece a melhor viabilidade economica, enquanto o sistema Hibrido com baterias so se justificaria caso o cliente tivesse equipamentos medicos vitais, home-office critico ou sofresse blecautes constantes na regiao.

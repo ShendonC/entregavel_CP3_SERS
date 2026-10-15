@@ -1,0 +1,208 @@
+{
+  "usuarios": {
+    "demo@lumos.com": {
+      "nome": "Equipe Lumos (Pietro, Luiz Otavio e Maria Eduarda)",
+      "telefone": "11999990000",
+      "senha_hash": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4"
+    }
+  },
+  "imoveis": {
+    "1": {
+      "endereco": "Av. Paulista",
+      "numero": "1106",
+      "apelido": "Residencia Familia Silva (SP)",
+      "tipo": "Casa",
+      "localizacao": {
+        "cidade": "São Paulo",
+        "uf": "SP"
+      },
+      "dono_email": "demo@lumos.com"
+    }
+  },
+  "equipamentos": {
+    "1": {
+      "nome": "Geladeira",
+      "categoria": "Cozinha",
+      "potencia": 133,
+      "pre_cadastrado": true
+    },
+    "2": {
+      "nome": "Chuveiro eletrico",
+      "categoria": "Banheiro",
+      "potencia": 5500,
+      "pre_cadastrado": true
+    },
+    "3": {
+      "nome": "Televisao",
+      "categoria": "Sala",
+      "potencia": 100,
+      "pre_cadastrado": true
+    },
+    "4": {
+      "nome": "Ar-condicionado",
+      "categoria": "Quarto",
+      "potencia": 1200,
+      "pre_cadastrado": true
+    },
+    "5": {
+      "nome": "Micro-ondas",
+      "categoria": "Cozinha",
+      "potencia": 1200,
+      "pre_cadastrado": true
+    },
+    "6": {
+      "nome": "Ferro de passar",
+      "categoria": "Lavanderia",
+      "potencia": 1000,
+      "pre_cadastrado": true
+    },
+    "7": {
+      "nome": "Maquina de lavar roupa",
+      "categoria": "Lavanderia",
+      "potencia": 500,
+      "pre_cadastrado": true
+    },
+    "8": {
+      "nome": "Computador desktop",
+      "categoria": "Escritorio",
+      "potencia": 200,
+      "pre_cadastrado": true
+    },
+    "9": {
+      "nome": "Notebook",
+      "categoria": "Escritorio",
+      "potencia": 65,
+      "pre_cadastrado": true
+    },
+    "10": {
+      "nome": "Lampada LED",
+      "categoria": "Geral",
+      "potencia": 10,
+      "pre_cadastrado": true
+    }
+  },
+  "associacoes": {
+    "1": {
+      "imovel_id": "1",
+      "equipamento_id": "1",
+      "quantidade": 1,
+      "tempo_uso": 24.0
+    },
+    "2": {
+      "imovel_id": "1",
+      "equipamento_id": "2",
+      "quantidade": 1,
+      "tempo_uso": 0.75
+    },
+    "3": {
+      "imovel_id": "1",
+      "equipamento_id": "3",
+      "quantidade": 2,
+      "tempo_uso": 4.0
+    },
+    "4": {
+      "imovel_id": "1",
+      "equipamento_id": "4",
+      "quantidade": 1,
+      "tempo_uso": 4.0
+    },
+    "5": {
+      "imovel_id": "1",
+      "equipamento_id": "5",
+      "quantidade": 1,
+      "tempo_uso": 0.3
+    },
+    "6": {
+      "imovel_id": "1",
+      "equipamento_id": "7",
+      "quantidade": 1,
+      "tempo_uso": 1.0
+    },
+    "7": {
+      "imovel_id": "1",
+      "equipamento_id": "8",
+      "quantidade": 1,
+      "tempo_uso": 5.0
+    },
+    "8": {
+      "imovel_id": "1",
+      "equipamento_id": "10",
+      "quantidade": 8,
+      "tempo_uso": 5.0
+    }
+  },
+  "dimensionamentos": {
+    "1": {
+      "imovel_id": "1",
+      "data": "2026-10-15 19:46",
+      "consumo_kwh_mes": 455.31,
+      "consumo_kwh_dia": 15.177,
+      "potencia_residencia_w": 9013.0,
+      "percentual": 100.0,
+      "localidade": "São Paulo/SP",
+      "hsp": 5.0,
+      "fonte_hsp": "CRESESB/SunData (via tabela publicada)",
+      "pr": 0.78,
+      "potencia_calculada_kwp": 3.892,
+      "potencia_instalada_kwp": 4.05,
+      "geracao_dia_kwh": 15.79,
+      "geracao_mes_kwh": 473.85,
+      "atendimento_pct": 104.07,
+      "energia_compensada_kwh_mes": 455.31,
+      "energia_excedente_kwh_mes": 18.54,
+      "modulo_id": "FV006",
+      "n_modulos": 10,
+      "inversor_id": "INV001",
+      "bateria_id": null,
+      "n_baterias": 0,
+      "autonomia_h": 0,
+      "capacidade_instalada_kwh": 0.0,
+      "c_equipamentos": 7492.2,
+      "c_outros": 4098.68,
+      "c_total": 11590.88,
+      "tarifa_brl_kwh": 0.92,
+      "economia_mensal_brl": 418.89,
+      "economia_anual_brl": 5026.68,
+      "payback_simples_anos": 2.31
+    },
+    "2": {
+      "imovel_id": "1",
+      "data": "2026-10-15 19:46",
+      "consumo_kwh_mes": 455.31,
+      "consumo_kwh_dia": 15.177,
+      "potencia_residencia_w": 9013.0,
+      "percentual": 100.0,
+      "localidade": "São Paulo/SP",
+      "hsp": 5.0,
+      "fonte_hsp": "CRESESB/SunData (via tabela publicada)",
+      "pr": 0.78,
+      "potencia_calculada_kwp": 3.892,
+      "potencia_instalada_kwp": 4.05,
+      "geracao_dia_kwh": 15.79,
+      "geracao_mes_kwh": 473.85,
+      "atendimento_pct": 104.07,
+      "energia_compensada_kwh_mes": 455.31,
+      "energia_excedente_kwh_mes": 18.54,
+      "modulo_id": "FV006",
+      "n_modulos": 10,
+      "inversor_id": "INV006",
+      "bateria_id": "BAT005",
+      "n_baterias": 2,
+      "autonomia_h": 12.0,
+      "capacidade_instalada_kwh": 10.24,
+      "c_equipamentos": 26062.2,
+      "c_outros": 7255.58,
+      "c_total": 33317.78,
+      "tarifa_brl_kwh": 0.92,
+      "economia_mensal_brl": 418.89,
+      "economia_anual_brl": 5026.68,
+      "payback_simples_anos": 6.63
+    }
+  },
+  "next_ids": {
+    "imovel": 2,
+    "equipamento": 11,
+    "associacao": 9,
+    "dimensionamento": 3
+  }
+}
