@@ -25,28 +25,30 @@ Sistema integrado em Python que cadastra usuarios, residencias e equipamentos el
 
 ---
 
-## 1. Como executar (1 Clique para a Sprint Review)
+## 1. Como executar — 100% pela Interface Grafica Web (1 Clique)
 
-Requer **Python 3.9 ou superior** (utiliza apenas a biblioteca padrao do Python, sem necessidade de `pip install`).
+Requer **Python 3.9 ou superior** (utiliza apenas a biblioteca padrao do Python `http.server`, sem necessidade de `pip install`).
 
 - **No Windows (Recomendado para a Sprint Review):** Basta dar **duplo clique em `RODAR_PROJETO.bat`**! Ele executa automaticamente:
-  1. A bateria completa de testes (`testes.py`) e validacao dos datasets;
-  2. O roteiro completo das **15 Etapas da Sprint Review + Questao 9** no terminal;
-  3. A abertura automatica de **`proposta_cliente.html` no navegador** (com a Proposta Consolidada, o **Simulador Web Interativo em tempo real**, o Roteiro Guiado de 15 etapas e o Comparativo de Cenarios);
-  4. O menu interativo no terminal ja logado com a residencia pre-cadastrada (`Residencia Familia Silva - SP`).
+  1. A bateria completa de testes (`testes.py`) e validacao dos datasets CSV;
+  2. O servidor **Full-Stack da Interface Grafica Web (`app_web.py`)** conectado ao motor Python (`fotovoltaico.py` e `sistema_analise_casa.py`) e ao banco `dados_sistema.json`;
+  3. A abertura automatica da **Aplicacao Web Completa no navegador (`http://127.0.0.1:8080`)**, onde o usuario realiza **100% do fluxo das Sprints 1, 2 e 3 visualmente** (sem precisar digitar nenhum comando no terminal):
+     - **Aba 1 (Sprint Review - 15 Etapas + Questao 9):** Painel com as 15 etapas obrigatorias do roteiro do professor e o parecer conclusivo da Questao 9;
+     - **Aba 2 (Residencia e Equipamentos - PB01/PB02):** Selecao/cadastro de residencia, adicao/remocao de eletrodomesticos e calculo de demanda (`E_mes`, `E_dia` e potencia instalada `W`/`kW`);
+     - **Aba 3 (Dimensionamento Solar e Baterias - PB03 a PB18):** Simulador conectado ao backend Python que consulta os CSVs, valida as regras C1 a C8, calcula orcamento, economia e payback e salva no JSON;
+     - **Aba 4 (Comparacao de Cenarios - PB14 + Questao 9):** Comparativo lado a lado entre Sem Baterias (On-Grid) e Com Baterias (Hibrido);
+     - **Aba 5 (Proposta Final e Historico Salvo - PB17/PB20/PB21):** Relatorio consolidado pronto para impressao/PDF, download `.txt`/`.html` e historico de simulacoes salvas em `dados_sistema.json`;
+     - **Aba 6 (Datasets CSV e Testes QA - PB05/PB07/PB12):** Visualizacao das tabelas de `modulos.csv`, `inversores.csv` e `baterias.csv` e execucao dos testes automatizados com 1 clique.
 
 ```bash
 # Ou via linha de comando:
-# 1. Modo Apresentacao Completo (Testes + 15 Etapas + Abre Navegador + Menu Logado)
+# 1. Iniciar diretamente a Interface Grafica Web Completa no navegador (Recomendado)
+python app_web.py
+
+# 2. Modo Apresentacao Completo (Testes + 15 Etapas + Abre Interface Web Full-Stack)
 python sistema_analise_casa.py --apresentacao
 
-# 2. Usar o sistema interativo pelo menu inicial (conta pronta: demo@lumos.com / senha: 1234)
-python sistema_analise_casa.py
-
-# 3. Executar apenas o relatorio das 15 etapas no terminal e atualizar HTML/TXT
-python sistema_analise_casa.py --demo
-
-# 4. Rodar todos os testes automatizados (CP1 + CP2 + Sprint 3 Final), sem interacao
+# 3. Rodar todos os testes automatizados (CP1 + CP2 + Sprint 3 Final), sem interacao
 python testes.py
 ```
 
@@ -58,13 +60,14 @@ python testes.py
 
 ```
 projeto/
-├── RODAR_PROJETO.bat           <- atalho de 1 clique: roda testes, 15 etapas, abre navegador e menu logado
-├── sistema_analise_casa.py     <- telas, menus, persistencia JSON e roteiro da Sprint Review
+├── RODAR_PROJETO.bat           <- atalho de 1 clique: roda testes e abre a Interface Grafica Web no navegador
+├── app_web.py                  <- servidor Full-Stack da Interface Grafica Web (6 abas interativas + API REST)
+├── sistema_analise_casa.py     <- persistencia JSON, gestao de residencias/equipamentos e roteiro da Sprint Review
 ├── fotovoltaico.py             <- motor de dimensionamento FV, datasets, comparacao, orcamento e payback
 ├── testes.py                   <- bateria de testes automatizados (CP1 + CP2 + Sprint 3 PB01-PB21)
 ├── dados_sistema.json          <- banco persistente com residencia pre-cadastrada e cenarios salvos (PB01/PB20)
 ├── proposta_cliente.txt        <- relatorio consolidado exportado automaticamente (PB17/PB21)
-├── proposta_cliente.html       <- pagina web interativa com simulador ao vivo, 15 etapas e comparacao (PB19/PB21)
+├── proposta_cliente.html       <- pagina web da proposta exportada para envio ao cliente (PB21)
 └── dados_fv/                   <- datasets estruturados e rastreaveis da parte solar (PB05/PB07/PB12)
     ├── modulos.csv             <- 10 modulos fotovoltaicos reais com precos e fontes
     ├── inversores.csv          <- 8 inversores (on-grid e hibridos) com limites eletricos, MPPT e eficiencia
@@ -78,27 +81,27 @@ projeto/
 
 | Item | User Story / Requisito da Sprint 3 | Onde esta implementado |
 |---|---|---|
-| **PB01** | Recuperacao da residencia ja cadastrada (sem exigir recadastro) | `sistema_analise_casa.py` (`selecionar_imovel_do_usuario`, `popular_residencia_demonstracao`, `dados_sistema.json`) |
-| **PB02** | Recuperacao da demanda energetica (`E_dia = E_mes / 30`, `E_mes` em kWh e potencia instalada em W/kW) | `fotovoltaico.py` (`demanda_energetica_residencia`, `consumo_diario`) e `sistema_analise_casa.py` (`potencia_instalada_imovel`, `exibir_relatorio`) |
-| **PB03** | Recurso solar (HSP com fonte + Performance Ratio `PR = 0,78` informado e justificado) | `fotovoltaico.py` (`PARAMETROS_FV`, `obter_hsp`, `validar_hsp`, `validar_pr`) |
-| **PB04** | Calculo da potencia fotovoltaica necessaria (`P_FV = E_dia / (HSP * PR)` em kWp) | `fotovoltaico.py` (`potencia_fv_por_consumo_diario`, `potencia_fv_necessaria`) |
-| **PB05** | Consulta ao dataset estruturado de modulos fotovoltaicos (`modulos.csv`) | `fotovoltaico.py` (`carregar_dataset("modulos")`) e `sistema_analise_casa.py` (`exibir_catalogo_datasets_fv`) |
-| **PB06** | Dimensionamento dos modulos (`N_mod = teto[(P_FV * 1000) / P_mod]` e `P_inst = (N_mod * P_mod) / 1000`) | `fotovoltaico.py` (`quantidade_minima_modulos`, `potencia_instalada`, `verificar_modulo_inversor`) |
-| **PB07** | Selecao do inversor compativel (`R_DC/AC = P_FV_instalada / P_inversor`, MPPT, tensao, corrente, eficiencia) | `fotovoltaico.py` (`verificar_modulo_inversor`, `selecionar_modulo_inversor`) e `inversores.csv` |
-| **PB08** | Estimativa da geracao fotovoltaica diaria (`E_gerada,dia = P_inst * HSP * PR`) e mensal (`E_gerada,mes = E_gerada,dia * 30`) | `fotovoltaico.py` (`geracao_estimada_diaria`, `geracao_estimada_mensal`) |
-| **PB09** | Comparacao geracao x consumo (`Atendimento (%) = (E_gerada,mes / E_consumida,mes) * 100`, distinguindo compensada vs excedente) | `fotovoltaico.py` (`comparar_geracao_consumo`) |
-| **PB10** | Opcao de sistema sem baterias (On-Grid) ou com baterias (Hibrido) | `fotovoltaico.py` (`dimensionar_fv`) e `sistema_analise_casa.py` (`novo_dimensionamento_fv`) |
-| **PB11** | Dimensionamento das baterias (`C_bat = E_aut / (DoD * eta_bat)` e `N_bat = teto(C_bat / C_unidade)`) | `fotovoltaico.py` (`energia_autonomia`, `capacidade_bateria_necessaria`, `quantidade_baterias`, `selecionar_bateria`) |
-| **PB12** | Dataset estruturado e rastreavel de baterias (`baterias.csv`) | `fotovoltaico.py` (`carregar_dataset("baterias")`) e `baterias.csv` |
-| **PB13** | Geracao automatica do orcamento (`Custo_item = qtd * preco_unitario` e `Custo_total = Soma(Custo_item)`) | `fotovoltaico.py` (`calcular_orcamento`) |
-| **PB14** | Comparacao lado a lado dos cenarios (Sem Baterias vs Com Baterias) | `fotovoltaico.py` (`comparar_cenarios`, `formatar_comparacao_cenarios`) e `sistema_analise_casa.py` (`tela_comparar_cenarios_fv`) |
-| **PB15** | Estimativa de economia mensal e anual (`Economia_mensal = E_compensada * tarifa`) | `fotovoltaico.py` (`calcular_economia`) |
-| **PB16** | Payback simples (`Payback = Investimento / Economia_anual`, explicitamente indicado como estimativa preliminar) | `fotovoltaico.py` (`calcular_payback_simples`) |
-| **PB17** | Tela e relatorio consolidado da proposta completa | `fotovoltaico.py` (`formatar_proposta`) |
-| **PB18** | Validacao de dados e tratamento de erros compreensiveis ao usuario | `fotovoltaico.py` (`positivo`, `validar_hsp`, `validar_pr`, `validar_tarifa`, `ErroDimensionamento`) |
-| **PB19** | Interface integrada (fluxo completo sem edicao de codigo ou calculos externos) | `sistema_analise_casa.py` (`menu_residencia`, `novo_dimensionamento_fv`, `--demo`) e `proposta_cliente.html` |
-| **PB20** | Persistencia completa do projeto em `dados_sistema.json` | `sistema_analise_casa.py` (`salvar_dimensionamento_no_banco`, `listar_dimensionamentos_fv`) |
-| **PB21** | Exportacao da proposta para apresentacao ao cliente (`.txt` e `.html`) | `fotovoltaico.py` (`exportar_proposta_txt`, `exportar_proposta_html`) |
+| **PB01** | Recuperacao da residencia ja cadastrada (sem exigir recadastro) | `app_web.py` (Aba 1 e 2), `sistema_analise_casa.py` e `dados_sistema.json` |
+| **PB02** | Recuperacao da demanda energetica (`E_dia = E_mes / 30`, `E_mes` em kWh e potencia instalada em W/kW) | `app_web.py` (Aba 2), `fotovoltaico.py` (`demanda_energetica_residencia`) e `sistema_analise_casa.py` |
+| **PB03** | Recurso solar (HSP com fonte + Performance Ratio `PR = 0,78` informado e justificado) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`PARAMETROS_FV`, `obter_hsp`, `validar_hsp`, `validar_pr`) |
+| **PB04** | Calculo da potencia fotovoltaica necessaria (`P_FV = E_dia / (HSP * PR)` em kWp) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`potencia_fv_por_consumo_diario`, `potencia_fv_necessaria`) |
+| **PB05** | Consulta ao dataset estruturado de modulos fotovoltaicos (`modulos.csv`) | `app_web.py` (Aba 3 e 6) e `fotovoltaico.py` (`carregar_dataset("modulos")`) |
+| **PB06** | Dimensionamento dos modulos (`N_mod = teto[(P_FV * 1000) / P_mod]` e `P_inst = (N_mod * P_mod) / 1000`) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`quantidade_minima_modulos`, `potencia_instalada`) |
+| **PB07** | Selecao do inversor compativel (`R_DC/AC = P_FV_instalada / P_inversor`, MPPT, tensao, corrente, eficiencia) | `app_web.py` (Aba 3 e 6), `fotovoltaico.py` (`verificar_modulo_inversor`) e `inversores.csv` |
+| **PB08** | Estimativa da geracao fotovoltaica diaria (`E_gerada,dia = P_inst * HSP * PR`) e mensal (`E_gerada,mes = E_gerada,dia * 30`) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`geracao_estimada_diaria`, `geracao_estimada_mensal`) |
+| **PB09** | Comparacao geracao x consumo (`Atendimento (%) = (E_gerada,mes / E_consumida,mes) * 100`, distinguindo compensada vs excedente) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`comparar_geracao_consumo`) |
+| **PB10** | Opcao de sistema sem baterias (On-Grid) ou com baterias (Hibrido) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`dimensionar_fv`) |
+| **PB11** | Dimensionamento das baterias (`C_bat = E_aut / (DoD * eta_bat)` e `N_bat = teto(C_bat / C_unidade)`) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`energia_autonomia`, `capacidade_bateria_necessaria`, `selecionar_bateria`) |
+| **PB12** | Dataset estruturado e rastreavel de baterias (`baterias.csv`) | `app_web.py` (Aba 3 e 6), `fotovoltaico.py` (`carregar_dataset("baterias")`) e `baterias.csv` |
+| **PB13** | Geracao automatica do orcamento (`Custo_item = qtd * preco_unitario` e `Custo_total = Soma(Custo_item)`) | `app_web.py` (Aba 3) e `fotovoltaico.py` (`calcular_orcamento`) |
+| **PB14** | Comparacao lado a lado dos cenarios (Sem Baterias vs Com Baterias) | `app_web.py` (Aba 4) e `fotovoltaico.py` (`comparar_cenarios`, `formatar_comparacao_cenarios`) |
+| **PB15** | Estimativa de economia mensal e anual (`Economia_mensal = E_compensada * tarifa`) | `app_web.py` (Aba 3 e 4) e `fotovoltaico.py` (`calcular_economia`) |
+| **PB16** | Payback simples (`Payback = Investimento / Economia_anual`, explicitamente indicado como estimativa preliminar) | `app_web.py` (Aba 3 e 4) e `fotovoltaico.py` (`calcular_payback_simples`) |
+| **PB17** | Tela e relatorio consolidado da proposta completa | `app_web.py` (Aba 5) e `fotovoltaico.py` (`formatar_proposta`) |
+| **PB18** | Validacao de dados e tratamento de erros compreensiveis ao usuario | `app_web.py` (Aba 3 - botao de teste de validacao e feedback visual) e `fotovoltaico.py` (`ErroDimensionamento`) |
+| **PB19** | Interface grafica web integrada (fluxo completo pelo navegador sem comandos tecnicos) | `app_web.py` (Aplicacao Web Full-Stack em 6 abas) e `RODAR_PROJETO.bat` |
+| **PB20** | Persistencia completa do projeto em `dados_sistema.json` | `app_web.py` (`POST /api/dimensionar`, Aba 5) e `sistema_analise_casa.py` (`salvar_dimensionamento_no_banco`) |
+| **PB21** | Exportacao da proposta para apresentacao ao cliente (`.txt`, `.html` e impressao PDF) | `app_web.py` (Aba 5) e `fotovoltaico.py` (`exportar_proposta_txt`, `exportar_proposta_html`) |
 
 ---
 

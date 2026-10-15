@@ -1101,24 +1101,28 @@ def menu_residencia():
 def iniciar_user():
     while True:
         print(" ==== SISTEMA DE DIMENSIONAMENTO ENERGETICO RESIDENCIAL - EQUIPE LUMOS ==== \n")
-        print("1. CADASTRO DE CONTA")
-        print("2. LOG IN (Conta pronta p/ Sprint Review: demo@lumos.com / senha: 1234)")
-        print("3. EXECUTAR DEMONSTRACAO COMPLETA DA SPRINT REVIEW (15 ITENS + ABRIR NAVEGADOR)")
-        print("4. RODAR TESTES AUTOMATIZADOS (QA - CP1 + CP2 + CP3)")
-        print("5. SAIR DO SISTEMA")
-        opcao = ler_opcao_inteira(1, 5)
+        print("1. ABRIR INTERFACE GRAFICA WEB COMPLETA NO NAVEGADOR (RECOMENDADO - PB19)")
+        print("2. CADASTRO DE CONTA (TERMINAL)")
+        print("3. LOG IN NO TERMINAL (Conta pronta: demo@lumos.com / senha: 1234)")
+        print("4. EXECUTAR DEMONSTRACAO DA SPRINT REVIEW NO TERMINAL (15 ITENS)")
+        print("5. RODAR TESTES AUTOMATIZADOS (QA - CP1 + CP2 + CP3)")
+        print("6. SAIR DO SISTEMA")
+        opcao = ler_opcao_inteira(1, 6)
         limpar_terminal()
         if opcao == 1:
-            cadastro_user()
+            import app_web
+            app_web.iniciar_servidor_web(abrir_navegador=True)
         elif opcao == 2:
+            cadastro_user()
+        elif opcao == 3:
             if login():
                 menu_residencia()
                 sessao["email_logado"] = None
             else:
                 concluir()
-        elif opcao == 3:
-            executar_demonstracao_sprint_review(True, abrir_navegador=True)
         elif opcao == 4:
+            executar_demonstracao_sprint_review(True, abrir_navegador=True)
+        elif opcao == 5:
             import testes
             testes.rodar_todos_os_testes()
             concluir()
@@ -1129,19 +1133,19 @@ def iniciar_user():
 
 if __name__ == "__main__":
     carregar_dados()
-    if "--demo" in sys.argv:
+    if "--web" in sys.argv:
+        import app_web
+        app_web.iniciar_servidor_web(abrir_navegador="--no-browser" not in sys.argv)
+    elif "--demo" in sys.argv:
         abrir = "--abrir-html" in sys.argv
         executar_demonstracao_sprint_review(pausar_no_final=False, abrir_navegador=abrir)
     elif "--apresentacao" in sys.argv:
         import testes
         testes.rodar_todos_os_testes()
         print("\n")
-        executar_demonstracao_sprint_review(pausar_no_final=False, abrir_navegador=True)
-        print("\n" + "=" * 88)
-        print("  NAVEGADOR ABERTO COM A PROPOSTA INTERATIVA (proposta_cliente.html)!")
-        print("  SESSAO INICIADA AUTOMATICAMENTE COMO: demo@lumos.com (Residencia Familia Silva - SP)")
-        print("=" * 88 + "\n")
-        sessao["email_logado"] = "demo@lumos.com"
-        menu_residencia()
+        executar_demonstracao_sprint_review(pausar_no_final=False, abrir_navegador=False)
+        import app_web
+        app_web.iniciar_servidor_web(abrir_navegador=True)
     else:
         iniciar_user()
+

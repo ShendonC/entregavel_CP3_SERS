@@ -212,6 +212,18 @@ def rodar_testes_fotovoltaico():
             assert os.path.isfile(p_txt) and os.path.getsize(p_txt) > 500
             assert os.path.isfile(p_html) and os.path.getsize(p_html) > 1000
 
+    def t_pb19_interface_web_integrada():
+        import app_web
+        est = app_web.montar_estado_completo()
+        assert est["ok"] is True
+        assert len(est["imoveis"]) >= 1
+        assert est["imovel_atual"]["consumo_mensal_kwh"] > 0
+        assert est["dimensionamento_atual"]["p_inst"] > 0
+        assert "sem_bateria" in est["comparacao_atual"] and "com_bateria" in est["comparacao_atual"]
+        assert len(est["datasets"]["modulos"]) == 10
+        assert len(est["datasets"]["inversores"]) == 8
+        assert len(est["datasets"]["baterias"]) == 6
+
     testes = [
         ("PB01/PB03 HSP por localizacao", t_pb01),
         ("PB02 Demanda energetica e percentual", t_pb02),
@@ -225,6 +237,7 @@ def rodar_testes_fotovoltaico():
         ("PB17 Relatorio consolidado completo", t_pb10),
         ("PB05/PB07/PB12 Validacao dos datasets", t_pb11),
         ("PB08/PB09/PB14/PB15/PB16/PB21 Geracao, Economia, Payback e Cenarios", t_sprint3_geracao_economia_payback),
+        ("PB19/PB20 Interface Grafica Web Integrada Full-Stack (app_web.py)", t_pb19_interface_web_integrada),
     ]
     aprovados = 0
     for nome, teste in testes:
