@@ -1058,6 +1058,7 @@ def formatar_comparacao_cenarios(comp, apelido=""):
         f"  {'INVESTIMENTO TOTAL':<32} | {brl(a['orcamento']['c_total']):<24} | {brl(b['orcamento']['c_total']):<24}",
         f"  {'Economia Mensal Estimada':<32} | {brl(a['economia']['economia_mensal_brl'])+'/mes':<24} | {brl(b['economia']['economia_mensal_brl'])+'/mes':<24}",
         f"  {'Economia Anual Estimada':<32} | {brl(a['economia']['economia_anual_brl'])+'/ano':<24} | {brl(b['economia']['economia_anual_brl'])+'/ano':<24}",
+        f"  {'Payback Simples (So Equip.)':<32} | {num(a['payback']['payback_apenas_equipamentos_anos'])+' anos':<24} | {num(b['payback']['payback_apenas_equipamentos_anos'])+' anos':<24}",
         f"  {'PAYBACK SIMPLES (TOTAL)':<32} | {num(a['payback']['payback_simples_anos'])+' anos':<24} | {num(b['payback']['payback_simples_anos'])+' anos':<24}",
         "  " + "-" * 84,
         f"  Diferenca de investimento: +{brl(comp['diferenca_investimento_total_brl'])} (+{num(comp['acrescimo_percentual'], 1)}%) no sistema com baterias.",
@@ -1082,15 +1083,21 @@ def exportar_proposta_txt(r, comp=None, apelido="Residencia", caminho_arquivo=No
     return caminho_arquivo
 
 
-def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=None):
+def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=None, cargas_residencia=None):
     """
-    PB19 / PB21 - Gera pagina HTML interativa e consolidada com a proposta tecnica,
-    orcamento detalhado, analise economica, payback simples e comparacao de cenarios
-    (Sem Baterias vs Com Baterias) pronta para demonstracao na Sprint Review.
+    PB19 / PB21 - Gera pagina HTML interativa e consolidada com:
+      1. Proposta Tecnica, Orcamento Detalhado, Economia e Payback Simples (PB01 a PB21)
+      2. Simulador Web Interativo conectado aos datasets reais (modulos, inversores, baterias e HSP)
+      3. Roteiro Guiado das 15 Etapas da Sprint Review (Secao 7)
+      4. Comparacao Lado a Lado (Sem Baterias vs Com Baterias) + Resposta da Questao Final (Secao 9)
+      5. Tabelas completas dos Datasets Estruturados e Equipamentos da Residencia
     """
+    import json as _json
+
     if caminho_arquivo is None:
         caminho_arquivo = os.path.join(PASTA_BASE, "proposta_cliente.html")
 
+    ds_completo = carregar_datasets_fv()
     s, arm, orc, h = r["selecao"], r["armazenamento"], r["orcamento"], r["hsp_info"]
     comp_g, econ, pay = r["comparacao_geracao"], r["economia"], r["payback"]
     mod, inv, cfg = s["modulo"], s["inversor"], s["config"]
@@ -1112,7 +1119,56 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
             f"<td style='text-align:right'>{brl(val_o)}</td></tr>\n"
         )
 
+    # Tabela de cargas da residencia (PB01 / PB02)
+    if not cargas_residencia:
+        cargas_residencia = [
+            {"nome": "Chuveiro eletrico", "categoria": "Banheiro", "potencia_w": 5500, "qtd": 1, "horas_dia": 0.75, "kwh_mes": 123.75},
+            {"nome": "Ar-condicionado", "categoria": "Quarto", "potencia_w": 1200, "qtd": 1, "horas_dia": 4.0, "kwh_mes": 144.00},
+            {"nome": "Geladeira", "categoria": "Cozinha", "potencia_w": 133, "qtd": 1, "horas_dia": 24.0, "kwh_mes": 95.76},
+            {"nome": "Computador desktop", "categoria": "Escritorio", "potencia_w": 200, "qtd": 1, "horas_dia": 5.0, "kwh_mes": 30.00},
+            {"nome": "Televisao", "categoria": "Sala", "potencia_w": 100, "qtd": 2, "horas_dia": 4.0, "kwh_mes": 24.00},
+            {"nome": "Maquina de lavar roupa", "categoria": "Lavanderia", "potencia_w": 500, "qtd": 1, "horas_dia": 1.0, "kwh_mes": 15.00},
+            {"nome": "Lampada LED", "categoria": "Geral", "potencia_w": 10, "qtd": 8, "horas_dia": 5.0, "kwh_mes": 12.00},
+            {"nome": "Micro-ondas", "categoria": "Cozinha", "potencia_w": 1200, "qtd": 1, "horas_dia": 0.3, "kwh_mes": 10.80},
+        ]
+    linhas_cargas_html = ""
+    for c_item in cargas_residencia:
+        linhas_cargas_html += (
+            f"<tr><td><strong>{c_item['nome']}</strong></td><td>{c_item['categoria']}</td>"
+            f"<td style='text-align:right'>{num(c_item['potencia_w'], 0)} W</td>"
+            f"<td style='text-align:center'>{c_item['qtd']}</td>"
+            f"<td style='text-align:right'>{num(c_item['horas_dia'], 2)} h/dia</td>"
+            f"<td style='text-align:right'><strong>{num(c_item['kwh_mes'], 2)} kWh/mes</strong></td></tr>\n"
+        )
+
+    # Tabelas dos Datasets (PB05, PB07, PB12)
+    linhas_ds_mod = "".join(
+        f"<tr><td><strong>{m['id']}</strong></td><td>{m['fabricante']}</td><td>{m['modelo']}</td>"
+        f"<td style='text-align:right'>{m['potencia_wp']:.0f} Wp</td><td style='text-align:right'>{num(m['voc_v'])} V / {num(m['vmp_v'])} V</td>"
+        f"<td style='text-align:right'>{num(m['isc_a'])} A / {num(m['imp_a'])} A</td><td style='text-align:right'>{num(m['eficiencia_pct'])}%</td>"
+        f"<td style='text-align:right'><strong>{brl(m['preco_brl'])}</strong></td><td><small>{m['fornecedor']} ({m['data_coleta']})</small></td></tr>\n"
+        for m in ds_completo["modulos"]
+    )
+    linhas_ds_inv = "".join(
+        f"<tr><td><strong>{iv['id']}</strong></td><td>{iv['fabricante']}</td><td>{iv['modelo']}</td>"
+        f"<td>{iv['tipo']}</td><td style='text-align:right'>{iv['potencia_nominal_w']:.0f} W / {iv['potencia_max_fv_w']:.0f} W</td>"
+        f"<td style='text-align:right'>{iv['faixa_mppt_min_v']:.0f}-{iv['faixa_mppt_max_v']:.0f} V ({int(iv['numero_mppt'])} MPPT)</td>"
+        f"<td style='text-align:right'>{num(iv['eficiencia_pct'], 1)}%</td>"
+        f"<td style='text-align:center'>{'SIM' if iv['compativel_bateria'] else 'NAO'}</td>"
+        f"<td style='text-align:right'><strong>{brl(iv['preco_brl'])}</strong></td></tr>\n"
+        for iv in ds_completo["inversores"]
+    )
+    linhas_ds_bat = "".join(
+        f"<tr><td><strong>{bt['id']}</strong></td><td>{bt['fabricante']}</td><td>{bt['modelo']}</td>"
+        f"<td>{bt['tecnologia']}</td><td style='text-align:right'>{num(bt['tensao_nominal_v'], 1)} V</td>"
+        f"<td style='text-align:right'>{bt['capacidade_ah']:.0f} Ah / {num(bt['capacidade_kwh'])} kWh</td>"
+        f"<td style='text-align:right'>{bt['dod_pct']:.0f}% ({bt['ciclos']:.0f} ciclos)</td>"
+        f"<td style='text-align:right'><strong>{brl(bt['preco_brl'])}</strong></td><td><small>{bt['fornecedor']} ({bt['data_coleta']})</small></td></tr>\n"
+        for bt in ds_completo["baterias"]
+    )
+
     bloco_comp_html = ""
+    bloco_15_etapas_html = ""
     if comp is not None:
         a = comp["sem_bateria"]
         b = comp["com_bateria"]
@@ -1120,42 +1176,84 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
         mod_b, inv_b, cfg_b = b["selecao"]["modulo"], b["selecao"]["inversor"], b["selecao"]["config"]
         bat_b = b["armazenamento"]["bateria"]
         bloco_comp_html = f"""
-        <section class="card">
-          <h2>Comparacao de Cenarios (PB14): Sem Baterias vs. Com Baterias</h2>
+        <section class="card" id="secao-comparacao">
+          <h2>3. Comparacao de Cenarios (PB14) e Questao Final da Sprint Review (Secao 9)</h2>
           <table>
             <thead>
               <tr>
                 <th>Indicador Tecnico / Economico</th>
-                <th>Cenario 1: Sem Baterias (On-Grid)</th>
-                <th>Cenario 2: Com Baterias (Hibrido)</th>
+                <th>Cenario 1: Sem Baterias (On-Grid Convencional)</th>
+                <th>Cenario 2: Com Baterias (Hibrido + Backup 12h)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Potencia FV Necessaria / Instalada</td><td>{num(a['p_fv'], 3)} kWp / <strong>{num(a['p_inst'], 3)} kWp</strong></td><td>{num(b['p_fv'], 3)} kWp / <strong>{num(b['p_inst'], 3)} kWp</strong></td></tr>
-              <tr><td>Modulos Fotovoltaicos</td><td>{cfg_a['n_modulos']}x {mod_a['fabricante']} {mod_a['modelo']} ({mod_a['potencia_wp']:.0f} Wp)</td><td>{cfg_b['n_modulos']}x {mod_b['fabricante']} {mod_b['modelo']} ({mod_b['potencia_wp']:.0f} Wp)</td></tr>
-              <tr><td>Inversor Selecionado</td><td>[{inv_a['id']}] {inv_a['fabricante']} {inv_a['modelo']} ({inv_a['tipo']}, {inv_a['potencia_nominal_w']:.0f} W, efic. {num(inv_a['eficiencia_pct'],1)}%)</td><td>[{inv_b['id']}] {inv_b['fabricante']} {inv_b['modelo']} ({inv_b['tipo']}, {inv_b['potencia_nominal_w']:.0f} W, efic. {num(inv_b['eficiencia_pct'],1)}%)</td></tr>
-              <tr><td>Geracao Estimada (Dia / Mes)</td><td>{num(a['geracao_dia'], 2)} kWh/dia | {num(a['geracao_mes'], 1)} kWh/mes</td><td>{num(b['geracao_dia'], 2)} kWh/dia | {num(b['geracao_mes'], 1)} kWh/mes</td></tr>
-              <tr><td>Atendimento / Energia Compensada</td><td>{num(a['comparacao_geracao']['atendimento_pct'], 1)}% ({num(a['economia']['energia_compensada_kwh_mes'])} kWh/mes)</td><td>{num(b['comparacao_geracao']['atendimento_pct'], 1)}% ({num(b['economia']['energia_compensada_kwh_mes'])} kWh/mes)</td></tr>
-              <tr><td>Armazenamento (Baterias)</td><td>Sem armazenamento (0 kWh)</td><td>{b['armazenamento']['n_baterias']}x [{bat_b['id']}] {bat_b['fabricante']} {bat_b['modelo']} ({num(b['armazenamento']['capacidade_instalada_kwh'])} kWh nominais / {num(b['armazenamento']['capacidade_util_kwh'])} kWh uteis)</td></tr>
-              <tr><td>Autonomia de Backup</td><td>0 h (depende da rede eletrica)</td><td><strong>{num(b['armazenamento']['autonomia_h'], 1)} horas</strong> ({num(b['armazenamento']['energia_autonomia_kwh'], 2)} kWh)</td></tr>
-              <tr><td>Custo dos Equipamentos</td><td>{brl(a['orcamento']['c_equipamentos'])}</td><td>{brl(b['orcamento']['c_equipamentos'])}</td></tr>
-              <tr><td>Investimento Total Estimado</td><td><strong>{brl(a['orcamento']['c_total'])}</strong></td><td><strong>{brl(b['orcamento']['c_total'])}</strong> (+{brl(comp['diferenca_investimento_total_brl'])} / +{num(comp['acrescimo_percentual'], 1)}%)</td></tr>
-              <tr><td>Economia Mensal / Anual</td><td>{brl(a['economia']['economia_mensal_brl'])}/mes | {brl(a['economia']['economia_anual_brl'])}/ano</td><td>{brl(b['economia']['economia_mensal_brl'])}/mes | {brl(b['economia']['economia_anual_brl'])}/ano</td></tr>
-              <tr><td>Payback Simples Estimado</td><td><span class="badge-ok">{a['payback']['payback_formatado']}</span></td><td><span class="badge-warn">{b['payback']['payback_formatado']}</span></td></tr>
+              <tr><td>Demanda da Residencia (PB01/PB02)</td><td>{num(a['consumo'])} kWh/mes ({num(a['consumo_diario'])} kWh/dia) | {num(a['potencia_residencia_w'], 0)} W</td><td>{num(b['consumo'])} kWh/mes ({num(b['consumo_diario'])} kWh/dia) | {num(b['potencia_residencia_w'], 0)} W</td></tr>
+              <tr><td>Potencia FV Necessaria / Instalada (PB04/PB06)</td><td>{num(a['p_fv'], 3)} kWp / <strong>{num(a['p_inst'], 3)} kWp</strong></td><td>{num(b['p_fv'], 3)} kWp / <strong>{num(b['p_inst'], 3)} kWp</strong></td></tr>
+              <tr><td>Modulos Fotovoltaicos (PB05/PB06)</td><td>{cfg_a['n_modulos']}x [{mod_a['id']}] {mod_a['fabricante']} {mod_a['modelo']} ({mod_a['potencia_wp']:.0f} Wp)</td><td>{cfg_b['n_modulos']}x [{mod_b['id']}] {mod_b['fabricante']} {mod_b['modelo']} ({mod_b['potencia_wp']:.0f} Wp)</td></tr>
+              <tr><td>Inversor Selecionado e R_DC/AC (PB07)</td><td>[{inv_a['id']}] {inv_a['fabricante']} {inv_a['modelo']} ({inv_a['tipo']}, {inv_a['potencia_nominal_w']:.0f} W, efic. {num(inv_a['eficiencia_pct'],1)}%, R_DC/AC = {num(cfg_a['ratio_dc_ac'])})</td><td>[{inv_b['id']}] {inv_b['fabricante']} {inv_b['modelo']} ({inv_b['tipo']}, {inv_b['potencia_nominal_w']:.0f} W, efic. {num(inv_b['eficiencia_pct'],1)}%, R_DC/AC = {num(cfg_b['ratio_dc_ac'])})</td></tr>
+              <tr><td>Geracao Estimada: Dia / Mes (PB08)</td><td>{num(a['geracao_dia'], 2)} kWh/dia | <strong>{num(a['geracao_mes'], 1)} kWh/mes</strong></td><td>{num(b['geracao_dia'], 2)} kWh/dia | <strong>{num(b['geracao_mes'], 1)} kWh/mes</strong></td></tr>
+              <tr><td>Atendimento / Energia Compensada (PB09)</td><td><strong>{num(a['comparacao_geracao']['atendimento_pct'], 1)}%</strong> ({num(a['economia']['energia_compensada_kwh_mes'])} kWh/mes compensados + {num(a['economia']['energia_excedente_kwh_mes'])} kWh/mes excedente)</td><td><strong>{num(b['comparacao_geracao']['atendimento_pct'], 1)}%</strong> ({num(b['economia']['energia_compensada_kwh_mes'])} kWh/mes compensados + {num(b['economia']['energia_excedente_kwh_mes'])} kWh/mes excedente)</td></tr>
+              <tr><td>Armazenamento em Baterias (PB10/PB11/PB12)</td><td>Sem armazenamento (0 kWh, R$ 0,00)</td><td><strong>{b['armazenamento']['n_baterias']}x [{bat_b['id']}] {bat_b['fabricante']} {bat_b['modelo']}</strong> ({num(b['armazenamento']['capacidade_instalada_kwh'])} kWh nominais / {num(b['armazenamento']['capacidade_util_kwh'])} kWh uteis, DoD {bat_b['dod_pct']:.0f}%)</td></tr>
+              <tr><td>Autonomia de Backup (PB11)</td><td>0 h (desliga em queda de rede por anti-ilhamento)</td><td><strong>{num(b['armazenamento']['autonomia_h'], 1)} horas</strong> (E_aut = {num(b['armazenamento']['energia_autonomia_kwh'], 2)} kWh | C_bat = {num(b['armazenamento']['c_bat_kwh'], 2)} kWh)</td></tr>
+              <tr><td>Custo dos Equipamentos - Soma Datasets (PB13)</td><td><strong>{brl(a['orcamento']['c_equipamentos'])}</strong></td><td><strong>{brl(b['orcamento']['c_equipamentos'])}</strong> (+{brl(comp['diferenca_equipamentos_brl'])})</td></tr>
+              <tr><td>Outros Custos (Estrutura, Cabos, Instalacao, Projeto)</td><td>{brl(a['orcamento']['c_outros'])}</td><td>{brl(b['orcamento']['c_outros'])}</td></tr>
+              <tr><td>Investimento Total Estimado (Turn-Key)</td><td><strong>{brl(a['orcamento']['c_total'])}</strong></td><td><strong>{brl(b['orcamento']['c_total'])}</strong> (+{brl(comp['diferenca_investimento_total_brl'])} / +{num(comp['acrescimo_percentual'], 1)}%)</td></tr>
+              <tr><td>Economia Mensal / Anual na Conta (PB15)</td><td><strong>{brl(a['economia']['economia_mensal_brl'])}/mes</strong> | <strong>{brl(a['economia']['economia_anual_brl'])}/ano</strong></td><td><strong>{brl(b['economia']['economia_mensal_brl'])}/mes</strong> | <strong>{brl(b['economia']['economia_anual_brl'])}/ano</strong></td></tr>
+              <tr><td>Payback Simples (Considerando So Equipamentos)</td><td>{num(a['payback']['payback_apenas_equipamentos_anos'])} anos</td><td>{num(b['payback']['payback_apenas_equipamentos_anos'])} anos</td></tr>
+              <tr><td>Payback Simples (Investimento Total / Economia Anual) (PB16)</td><td><span class="badge-ok">{a['payback']['payback_formatado']}</span></td><td><span class="badge-warn">{b['payback']['payback_formatado']}</span></td></tr>
             </tbody>
           </table>
-          <div class="callout">
-            <h3>Questao Final da Sprint Review (Secao 9) - Analise Tecnica e Economica</h3>
-            <p style="white-space: pre-line;">{comp['analise_questao_final']}</p>
+          <div class="callout" style="border-left-color:#059669; background:#ecfdf5;">
+            <h3 style="color:#065f46;">Resposta da Questao Final da Sprint Review (Secao 9 do PDF)</h3>
+            <p style="margin:6px 0;"><strong>Pergunta do Professor:</strong> <em>"Para a residencia utilizada na demonstracao, qual solucao faz mais sentido: sistema fotovoltaico sem armazenamento ou sistema com baterias? Quais resultados tecnicos e economicos do projeto sustentam a analise?"</em></p>
+            <p style="white-space: pre-line; margin-top:10px;">{comp['analise_questao_final']}</p>
           </div>
         </section>
         """
+
+        bloco_15_etapas_html = f"""
+        <section class="card" id="secao-roteiro">
+          <h2>4. Roteiro Guiado das 15 Etapas da Sprint Review (Secao 7 do PDF)</h2>
+          <p style="color:var(--muted); margin-top:0;">Use este quadro durante a apresentacao ao vivo na aula de 23/10 para demonstrar cada um dos 15 itens exigidos pelo Prof. Alvaro:</p>
+          <div class="steps-grid">
+            <div class="step-box"><span class="step-num">Etapa 1</span><strong>Selecao da Residencia (PB01)</strong><p>Imovel #1 recuperado do banco JSON: <strong>{apelido}</strong> (Av. Paulista, 1106 - {h['cidade']}/{h['uf']}), sem exigir novo cadastro.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 2</span><strong>Equipamentos e Consumo (PB02)</strong><p>8 tipos de equipamentos (16 unidades), potencia instalada de <strong>{num(a['potencia_residencia_w'], 0)} W ({num(a['potencia_residencia_kw'], 3)} kW)</strong>, consumo <strong>E_mes = {num(a['consumo'])} kWh/mes</strong> e <strong>E_dia = {num(a['consumo_diario'])} kWh/dia</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 3</span><strong>Dimensionamento FV (PB04)</strong><p>Formula: <code>P_FV = E_dia / (HSP x PR) = {num(a['consumo_diario'], 3)} / ({num(h['hsp'])} x {num(a['pr'])})</code> = <strong>{num(a['p_fv'], 3)} kWp</strong> necessarios para 100% da demanda.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 4</span><strong>HSP e PR Utilizados (PB03)</strong><p><strong>HSP = {num(h['hsp'])} kWh/m2/dia</strong> ({h['fonte']}) e <strong>PR = {num(a['pr']*100, 0)}% (0,78)</strong> justificado pela NT EPE DEA-SEE 009/2023 (perdas termicas, cabos e inversor).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 5</span><strong>Consulta aos Datasets (PB05/PB07/PB12)</strong><p>Leitura dinamica dos arquivos CSV separados: <strong>10 modulos</strong> (<code>modulos.csv</code>), <strong>8 inversores</strong> (<code>inversores.csv</code>) e <strong>6 baterias LiFePO4</strong> (<code>baterias.csv</code>).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 6</span><strong>Selecao dos Modulos (PB06)</strong><p>Escolhido <strong>[{mod_a['id']}] {mod_a['fabricante']} {mod_a['modelo']} ({mod_a['potencia_wp']:.0f} Wp)</strong>. <code>N_mod = teto(3891,5 / 550) = {cfg_a['n_modulos']} modulos</code> -> <strong>P_inst = {num(a['p_inst'], 2)} kWp</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 7</span><strong>Compatibilidade do Inversor (PB07)</strong><p>Verificadas regras C1 a C8 (Voc frio {num(cfg_a['voc_string_v'], 1)}V, Vmp {num(cfg_a['vmp_string_v'], 1)}V no MPPT, corrente e <code>R_DC/AC = {num(cfg_a['ratio_dc_ac'])}</code>). On-Grid: <strong>[{inv_a['id']}] {inv_a['fabricante']}</strong>; Hibrido: <strong>[{inv_b['id']}] {inv_b['fabricante']}</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 8</span><strong>Geracao Estimada (PB08)</strong><p><code>E_gerada,dia = {num(a['p_inst'], 2)} x {num(h['hsp'])} x {num(a['pr'])}</code> = <strong>{num(a['geracao_dia'], 2)} kWh/dia</strong> e <code>E_gerada,mes = E_dia x 30</code> = <strong>{num(a['geracao_mes'], 2)} kWh/mes</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 9</span><strong>Comparacao Geracao x Consumo (PB09)</strong><p>Atendimento de <strong>{num(a['comparacao_geracao']['atendimento_pct'], 2)}%</strong>. Distingue energia compensada (<strong>{num(a['comparacao_geracao']['energia_compensada_kwh_mes'])} kWh/mes</strong>) do excedente injetado (<strong>{num(a['comparacao_geracao']['energia_excedente_kwh_mes'])} kWh/mes</strong>).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 10</span><strong>Opcao Sem Baterias (PB10)</strong><p>Sistema On-Grid convencional: 7x Canadian 550W + 1x Growatt MIN 6000TL-X (6000W), sem banco de baterias (0 kWh).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 11</span><strong>Opcao Com Baterias e Autonomia (PB11)</strong><p>Para <strong>12h de autonomia</strong> (<code>E_aut = 7,59 kWh</code>, <code>C_bat = 9,98 kWh</code>): selecionadas <strong>2x [{bat_b['id']}] {bat_b['fabricante']} {bat_b['modelo']}</strong> (9,60 kWh nominais / 7,68 kWh uteis, 48V LiFePO4).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 12</span><strong>Orcamento Automatico (PB13)</strong><p>On-Grid: Equipamentos <strong>{brl(a['orcamento']['c_equipamentos'])}</strong> | Total <strong>{brl(a['orcamento']['c_total'])}</strong>.<br>Hibrido: Equipamentos <strong>{brl(b['orcamento']['c_equipamentos'])}</strong> | Total <strong>{brl(b['orcamento']['c_total'])}</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 13</span><strong>Comparacao dos Cenarios (PB14)</strong><p>Tabela comparativa lado a lado demonstrando acrescimo de <strong>+{brl(comp['diferenca_investimento_total_brl'])} (+{num(comp['acrescimo_percentual'], 1)}%)</strong> para incluir backup de 12h.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 14</span><strong>Economia e Payback Simples (PB15/PB16)</strong><p>Tarifa R$ 0,92/kWh -> Economia de <strong>{brl(a['economia']['economia_mensal_brl'])}/mes ({brl(a['economia']['economia_anual_brl'])}/ano)</strong>. Payback Simples: <strong>{num(a['payback']['payback_simples_anos'])} anos (On-Grid)</strong> vs <strong>{num(b['payback']['payback_simples_anos'])} anos (Hibrido)</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 15</span><strong>Proposta Final ao Cliente (PB17/PB21)</strong><p>Proposta consolidada exibida no terminal, salva em <code>dados_sistema.json</code> (PB20) e exportada em <code>proposta_cliente.txt</code> e <code>proposta_cliente.html</code>.</p></div>
+          </div>
+        </section>
+        """
+
+    dados_js = _json.dumps(
+        {
+            "consumo_padrao": round(r["consumo"], 2),
+            "potencia_casa_w": round(r["potencia_residencia_w"], 1),
+            "pr_padrao": r["pr"],
+            "tarifa_padrao": econ["tarifa_brl_kwh"],
+            "modulos": ds_completo["modulos"],
+            "inversores": ds_completo["inversores"],
+            "baterias": ds_completo["baterias"],
+            "hsp_lista": list(ds_completo["hsp"].values()),
+        },
+        ensure_ascii=False,
+    )
 
     html = f"""<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Proposta Fotovoltaica Consolidada - {apelido} | Equipe Lumos FIAP</title>
+  <title>Proposta Fotovoltaica & Simulador Sprint 3 - {apelido} | Equipe Lumos FIAP</title>
   <style>
     :root {{
       --bg: #f8fafc;
@@ -1176,16 +1274,45 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
       color: var(--ink);
       line-height: 1.5;
     }}
-    .container {{ max-width: 1120px; margin: 0 auto; }}
+    .container {{ max-width: 1180px; margin: 0 auto; }}
     header {{
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
       color: #fff;
       padding: 28px 32px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }}
     header h1 {{ margin: 0 0 8px 0; font-size: 24px; }}
     header p {{ margin: 4px 0; color: #cbd5e1; font-size: 14px; }}
+    .nav-bar {{
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      background: var(--surface);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }}
+    .nav-bar a, .btn-action {{
+      text-decoration: none;
+      background: #f1f5f9;
+      color: #1e3a8a;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+    }}
+    .nav-bar a:hover, .btn-action:hover {{ background: #e0f2fe; border-color: #0284c7; }}
+    .btn-primary {{ background: #0284c7; color: #fff; border-color: #0284c7; }}
+    .btn-primary:hover {{ background: #0369a1; color: #fff; }}
     .grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1215,8 +1342,8 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
       padding-bottom: 10px;
       color: #1e3a8a;
     }}
-    table {{ width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }}
-    th, td {{ border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }}
+    th, td {{ border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }}
     th {{ background: #f1f5f9; font-weight: 600; }}
     .badge-ok {{ background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
     .badge-warn {{ background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
@@ -1228,28 +1355,79 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
       margin-top: 18px;
     }}
     .callout h3 {{ margin: 0 0 8px 0; font-size: 16px; color: #0369a1; }}
+    .sim-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }}
+    .sim-field label {{ display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }}
+    .sim-field select, .sim-field input {{
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13.5px;
+    }}
+    .steps-grid {{
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }}
+    .step-box {{
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: #f8fafc;
+    }}
+    .step-box p {{ margin: 6px 0 0 0; font-size: 13px; color: #334155; }}
+    .step-num {{
+      display: inline-block;
+      background: #1e3a8a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }}
     footer {{ text-align: center; font-size: 13px; color: var(--muted); padding: 16px 0; }}
+    @media print {{ .nav-bar, #secao-simulador {{ display: none; }} body {{ padding: 0; }} }}
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Proposta Tecnica e Economica - Sistema Solar Fotovoltaico ({apelido})</h1>
-      <p><strong>Disciplina:</strong> Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves) - Sprint 3 Final</p>
-      <p><strong>Equipe Lumos (FIAP):</strong> Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)</p>
-      <p><strong>Localidade:</strong> {h['cidade']}/{h['uf']} | <strong>Data de emissao:</strong> {r['data']}</p>
+      <div>
+        <h1>Sistema de Dimensionamento e Orcamento Fotovoltaico ({apelido})</h1>
+        <p><strong>Disciplina:</strong> Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves) - Sprint 3 Final (PB01 a PB21)</p>
+        <p><strong>Equipe Lumos (FIAP):</strong> Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)</p>
+        <p><strong>Localidade Base:</strong> {h['cidade']}/{h['uf']} (HSP {num(h['hsp'])} kWh/m2/dia) | <strong>Emissao:</strong> {r['data']}</p>
+      </div>
+      <div>
+        <button class="btn-action btn-primary" onclick="window.print()">Imprimir / Salvar Proposta PDF</button>
+      </div>
     </header>
+
+    <nav class="nav-bar">
+      <a href="#secao-proposta">1. Proposta & Orcamento (PB13-PB17)</a>
+      <a href="#secao-simulador">2. Simulador Interativo ao Vivo (PB01-PB19)</a>
+      <a href="#secao-comparacao">3. Comparacao Sem vs Com Baterias & Secao 9 (PB14)</a>
+      <a href="#secao-roteiro">4. Roteiro das 15 Etapas da Sprint Review</a>
+      <a href="#secao-datasets">5. Equipamentos da Casa & Datasets CSV (PB05/PB07/PB12)</a>
+    </nav>
 
     <div class="grid">
       <div class="kpi">
         <div class="label">Consumo Mensal / Diario (PB02)</div>
         <div class="value">{num(r['consumo'])} kWh/mes</div>
-        <div class="sub">E_dia: {num(r['consumo_diario'], 2)} kWh/dia | Pot. Casa: {num(r['potencia_residencia_kw'], 2)} kW</div>
+        <div class="sub">E_dia: {num(r['consumo_diario'], 2)} kWh/dia | Pot. Casa: {num(r['potencia_residencia_kw'], 3)} kW ({num(r['potencia_residencia_w'], 0)} W)</div>
       </div>
       <div class="kpi">
         <div class="label">Potencia FV Instalada (PB04/PB06)</div>
         <div class="value">{num(r['p_inst'], 2)} kWp</div>
-        <div class="sub">Necessaria: {num(r['p_fv'], 2)} kWp | HSP: {num(h['hsp'])} | PR: {num(r['pr']*100, 0)}%</div>
+        <div class="sub">Necessaria: {num(r['p_fv'], 3)} kWp | HSP: {num(h['hsp'])} | PR: {num(r['pr']*100, 0)}%</div>
       </div>
       <div class="kpi">
         <div class="label">Geracao Estimada (PB08/PB09)</div>
@@ -1259,49 +1437,270 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
       <div class="kpi">
         <div class="label">Investimento & Payback Simples (PB13/PB16)</div>
         <div class="value">{brl(orc['c_total'])}</div>
-        <div class="sub">Economia: {brl(econ['economia_mensal_brl'])}/mes | Retorno: {num(pay['payback_simples_anos'])} anos</div>
+        <div class="sub">Economia: {brl(econ['economia_mensal_brl'])}/mes | Payback: {num(pay['payback_simples_anos'])} anos</div>
       </div>
     </div>
 
-    <section class="card">
+    <section class="card" id="secao-simulador">
+      <h2>Simulador Interativo para Demonstracao ao Vivo (PB01 a PB19)</h2>
+      <p style="margin-top:0; color:var(--muted); font-size:13.5px;">Altere qualquer parametro abaixo (localidade/HSP, consumo, PR, modulo, inversor ou adicione baterias) para recalcular instantaneamente usando os datasets reais do projeto:</p>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>Localidade / HSP (PB03)</label>
+          <select id="sim-hsp" onchange="recalcularSimulador()"></select>
+        </div>
+        <div class="sim-field">
+          <label>Consumo Mensal E_mes (kWh/mes) (PB02)</label>
+          <input type="number" id="sim-consumo" value="{r['consumo']:.2f}" min="10" step="10" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Meta de Atendimento (%) (PB04)</label>
+          <input type="number" id="sim-pct" value="{r['percentual']:.0f}" min="1" max="100" step="5" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Performance Ratio PR (%) (PB03)</label>
+          <input type="number" id="sim-pr" value="{r['pr']*100:.0f}" min="50" max="95" step="1" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Modulo Fotovoltaico (PB05/PB06)</label>
+          <select id="sim-mod" onchange="recalcularSimulador()">
+            <option value="AUTO">Selecao Otima Automatica (Menor Custo Compativel)</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label>Armazenamento em Baterias (PB10)</label>
+          <select id="sim-bat-ativo" onchange="recalcularSimulador()">
+            <option value="0">Sem Baterias (On-Grid Convencional)</option>
+            <option value="1">Com Baterias (Hibrido + Backup)</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label>Autonomia de Baterias (horas) (PB11)</label>
+          <input type="number" id="sim-autonomia" value="12" min="1" max="72" step="1" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Tarifa de Energia (R$/kWh) (PB15)</label>
+          <input type="number" id="sim-tarifa" value="{econ['tarifa_brl_kwh']:.2f}" min="0.20" max="5.00" step="0.05" oninput="recalcularSimulador()">
+        </div>
+      </div>
+      <div id="sim-resultado" class="callout" style="margin-top:12px;"></div>
+    </section>
+
+    <section class="card" id="secao-proposta">
       <h2>1. Especificacao Tecnica do Sistema Dimensionado (PB03 a PB12)</h2>
       <table>
         <tbody>
-          <tr><th style="width:28%">Recurso Solar (HSP e PR)</th><td><strong>{h['cidade']}/{h['uf']}</strong>: HSP = {num(h['hsp'])} kWh/m2/dia ({h['fonte']})<br><small>{r['justificativa_pr']}</small></td></tr>
-          <tr><th>Modulos Fotovoltaicos</th><td><strong>{cfg['n_modulos']}x [{mod['id']}] {mod['fabricante']} {mod['modelo']}</strong> ({mod['potencia_wp']:.0f} Wp, Eficiencia {num(mod['eficiencia_pct'])}%, Voc {num(mod['voc_v'])} V, Vmp {num(mod['vmp_v'])} V, Imp {num(mod['imp_a'])} A)<br>Arranjo: N minimo = {s['n_minimo']} -> N instalado = {cfg['n_modulos']} ({cfg['n_strings']} string(s) de {cfg['por_string']} modulos em serie)</td></tr>
-          <tr><th>Inversor e Compatibilidade</th><td><strong>[{inv['id']}] {inv['fabricante']} {inv['modelo']}</strong> (Tipo: {inv['tipo']}, Potencia Nominal: {inv['potencia_nominal_w']:.0f} W, Max FV: {inv['potencia_max_fv_w']:.0f} W, Eficiencia: {num(inv['eficiencia_pct'], 1)}%)<br>Verificacao Eletrica: Voc string (frio) = {num(cfg['voc_string_v'], 1)} V (limite {inv['tensao_max_entrada_v']:.0f} V) | Vmp string = {num(cfg['vmp_string_v'], 1)} V (MPPT {inv['faixa_mppt_min_v']:.0f}-{inv['faixa_mppt_max_v']:.0f} V) | Razao R_DC/AC = {num(cfg['ratio_dc_ac'])}</td></tr>
-          <tr><th>Comparacao Geracao x Consumo</th><td>Consumo Mensal: {num(comp_g['consumo_mensal_kwh'])} kWh/mes | Geracao Mensal: {num(comp_g['geracao_mensal_kwh'])} kWh/mes ({num(comp_g['atendimento_pct'], 1)}%)<br>Energia Efetivamente Compensada: <strong>{num(comp_g['energia_compensada_kwh_mes'])} kWh/mes</strong> | Excedente Injetado na Rede: <strong>{num(comp_g['energia_excedente_kwh_mes'])} kWh/mes</strong></td></tr>
+          <tr><th style="width:28%">Residencia e Demanda (PB01 / PB02)</th><td><strong>{apelido}</strong> | Consumo Mensal (E_mes): <strong>{num(r['consumo'])} kWh/mes</strong> | Consumo Diario (E_dia = E_mes / 30): <strong>{num(r['consumo_diario'], 2)} kWh/dia</strong> | Potencia Instalada da Casa: <strong>{num(r['potencia_residencia_w'], 0)} W ({num(r['potencia_residencia_kw'], 3)} kW)</strong></td></tr>
+          <tr><th>Recurso Solar (HSP e PR - PB03)</th><td><strong>{h['cidade']}/{h['uf']}</strong>: HSP = <strong>{num(h['hsp'])} kWh/m2/dia</strong> ({h['fonte']}) | PR = <strong>{num(r['pr']*100, 0)}%</strong><br><small>{r['justificativa_pr']}</small></td></tr>
+          <tr><th>Potencia FV Necessaria (PB04)</th><td><code>P_FV = E_dia / (HSP x PR) = {num(r['consumo_diario'], 3)} / ({num(h['hsp'])} x {num(r['pr'])})</code> = <strong>{num(r['p_fv'], 3)} kWp</strong></td></tr>
+          <tr><th>Modulos Fotovoltaicos (PB05 / PB06)</th><td><strong>{cfg['n_modulos']}x [{mod['id']}] {mod['fabricante']} {mod['modelo']}</strong> ({mod['potencia_wp']:.0f} Wp, Eficiencia {num(mod['eficiencia_pct'])}%, Voc {num(mod['voc_v'])} V, Vmp {num(mod['vmp_v'])} V, Imp {num(mod['imp_a'])} A)<br>Dimensionamento: <code>N_mod = teto[({num(r['p_fv'], 3)} x 1000) / {mod['potencia_wp']:.0f}] = {s['n_minimo']}</code> -> Instalado: <strong>{cfg['n_modulos']} modulos</strong> ({cfg['n_strings']} string(s) de {cfg['por_string']} modulos) -> <strong>P_inst = {num(r['p_inst'], 3)} kWp</strong></td></tr>
+          <tr><th>Inversor e Compatibilidade (PB07)</th><td><strong>[{inv['id']}] {inv['fabricante']} {inv['modelo']}</strong> (Tipo: {inv['tipo']}, Potencia Nominal: {inv['potencia_nominal_w']:.0f} W, Max FV: {inv['potencia_max_fv_w']:.0f} W, Eficiencia: {num(inv['eficiencia_pct'], 1)}%)<br>Verificacao Eletrica: Voc string (frio +10%) = {num(cfg['voc_string_v'], 1)} V (limite {inv['tensao_max_entrada_v']:.0f} V) | Vmp string = {num(cfg['vmp_string_v'], 1)} V (MPPT {inv['faixa_mppt_min_v']:.0f}-{inv['faixa_mppt_max_v']:.0f} V) | Razao <code>R_DC/AC = P_inst / P_inv = {num(cfg['ratio_dc_ac'])}</code></td></tr>
+          <tr><th>Geracao e Atendimento (PB08 / PB09)</th><td>Geracao Diaria: <strong>{num(r['geracao_dia'], 2)} kWh/dia</strong> | Geracao Mensal: <strong>{num(comp_g['geracao_mensal_kwh'])} kWh/mes</strong> (Atendimento: <strong>{num(comp_g['atendimento_pct'], 1)}%</strong> do consumo)<br>Energia Efetivamente Compensada na Fatura: <strong>{num(comp_g['energia_compensada_kwh_mes'])} kWh/mes</strong> | Excedente Injetado na Rede (Creditos GD): <strong>{num(comp_g['energia_excedente_kwh_mes'])} kWh/mes</strong></td></tr>
         </tbody>
       </table>
     </section>
 
     <section class="card">
-      <h2>2. Orcamento Detalhado (PB13) e Indicadores Economicos (PB15 / PB16)</h2>
+      <h2>2. Orcamento Detalhado (PB13) e Indicadores Economicos / Payback Simples (PB15 / PB16)</h2>
       <table>
         <thead>
-          <tr><th>Categoria</th><th>Equipamento / Descricao e Fonte</th><th style="text-align:center">Qtd</th><th style="text-align:right">Preco Unitario</th><th style="text-align:right">Subtotal</th></tr>
+          <tr><th>Categoria</th><th>Equipamento / Descricao e Fonte Rastreavel</th><th style="text-align:center">Qtd</th><th style="text-align:right">Preco Unitario</th><th style="text-align:right">Subtotal</th></tr>
         </thead>
         <tbody>
           {linhas_orc}
-          <tr style="background:#f8fafc"><td colspan="4" style="text-align:right"><strong>SUBTOTAL DE EQUIPAMENTOS (DATASETS)</strong></td><td style="text-align:right"><strong>{brl(orc['c_equipamentos'])}</strong></td></tr>
-          <tr style="background:#e0f2fe"><td colspan="4" style="text-align:right"><strong>INVESTIMENTO TOTAL ESTIMADO DO PROJETO</strong></td><td style="text-align:right"><strong>{brl(orc['c_total'])}</strong></td></tr>
+          <tr style="background:#f8fafc"><td colspan="4" style="text-align:right"><strong>CUSTO TOTAL DOS EQUIPAMENTOS (SOMA DOS ITENS DO DATASET: Custo_total = Sigma Custo_item)</strong></td><td style="text-align:right"><strong>{brl(orc['c_equipamentos'])}</strong></td></tr>
+          <tr style="background:#e0f2fe"><td colspan="4" style="text-align:right"><strong>INVESTIMENTO TOTAL ESTIMADO DO PROJETO (EQUIPAMENTOS + ESTRUTURA, INSTALACAO E HOMOLOGACAO)</strong></td><td style="text-align:right"><strong>{brl(orc['c_total'])}</strong></td></tr>
         </tbody>
       </table>
       <div class="callout">
         <h3>Estimativa de Economia e Payback Simples (PB15 / PB16)</h3>
         <p><strong>Tarifa de Energia:</strong> {brl(econ['tarifa_brl_kwh'])}/kWh ({econ['fonte_tarifa']}) | <strong>Energia Compensada:</strong> {num(econ['energia_compensada_kwh_mes'])} kWh/mes</p>
-        <p><strong>Economia Mensal Estimada:</strong> {brl(econ['economia_mensal_brl'])}/mes | <strong>Economia Anual Estimada:</strong> {brl(econ['economia_anual_brl'])}/ano</p>
-        <p><strong>Payback Simples (Investimento Total / Economia Anual):</strong> <span class="badge-ok">{pay['payback_formatado']}</span> (Apenas equipamentos: {num(pay['payback_apenas_equipamentos_anos'])} anos)</p>
+        <p><strong>Economia Mensal Estimada:</strong> <code>{num(econ['energia_compensada_kwh_mes'])} x {brl(econ['tarifa_brl_kwh'])}</code> = <strong>{brl(econ['economia_mensal_brl'])}/mes</strong> | <strong>Economia Anual Estimada:</strong> <strong>{brl(econ['economia_anual_brl'])}/ano</strong></p>
+        <p><strong>Payback Simples (Investimento Total / Economia Anual):</strong> <span class="badge-ok">{pay['payback_formatado']}</span> &nbsp;|&nbsp; <strong>Payback Simples (Apenas Equipamentos do Dataset):</strong> <span class="badge-ok">{num(pay['payback_apenas_equipamentos_anos'])} anos</span></p>
         <p><small>{pay['aviso_nao_exato']}</small></p>
       </div>
     </section>
 
     {bloco_comp_html}
 
+    {bloco_15_etapas_html}
+
+    <section class="card" id="secao-datasets">
+      <h2>5. Equipamentos Cadastrados na Residencia (PB01/PB02) e Datasets Estruturados (PB05/PB07/PB12)</h2>
+      <h3 style="font-size:15px; color:#0f172a; margin-top:12px;">5.1 Cargas Eletricas Cadastradas em "{apelido}" (dados_sistema.json)</h3>
+      <table>
+        <thead>
+          <tr><th>Equipamento</th><th>Categoria</th><th style="text-align:right">Potencia Unit.</th><th style="text-align:center">Qtd</th><th style="text-align:right">Uso Diario</th><th style="text-align:right">Consumo Mensal</th></tr>
+        </thead>
+        <tbody>
+          {linhas_cargas_html}
+          <tr style="background:#f1f5f9"><td colspan="2"><strong>TOTAL DA RESIDENCIA (PB02)</strong></td><td style="text-align:right"><strong>{num(r['potencia_residencia_w'], 0)} W ({num(r['potencia_residencia_kw'], 3)} kW)</strong></td><td style="text-align:center"><strong>16</strong></td><td style="text-align:right"><strong>E_dia = {num(r['consumo_diario'], 2)} kWh/dia</strong></td><td style="text-align:right"><strong>E_mes = {num(r['consumo'], 2)} kWh/mes</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.2 Dataset de Modulos Fotovoltaicos (modulos.csv - PB05)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th style="text-align:right">Potencia</th><th style="text-align:right">Voc / Vmp</th><th style="text-align:right">Isc / Imp</th><th style="text-align:right">Eficiencia</th><th style="text-align:right">Preco Unit.</th><th>Fonte / Data</th></tr>
+        </thead>
+        <tbody>{linhas_ds_mod}</tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.3 Dataset de Inversores (inversores.csv - PB07)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th>Tipo</th><th style="text-align:right">Pot. Nom / Max FV</th><th style="text-align:right">Faixa MPPT</th><th style="text-align:right">Eficiencia</th><th style="text-align:center">Bateria</th><th style="text-align:right">Preco Unit.</th></tr>
+        </thead>
+        <tbody>{linhas_ds_inv}</tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.4 Dataset de Baterias LiFePO4 (baterias.csv - PB12)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th>Tecnologia</th><th style="text-align:right">Tensao</th><th style="text-align:right">Capacidade</th><th style="text-align:right">DoD / Ciclos</th><th style="text-align:right">Preco Unit.</th><th>Fonte / Data</th></tr>
+        </thead>
+        <tbody>{linhas_ds_bat}</tbody>
+      </table>
+    </section>
+
     <footer>
       Sistema de Dimensionamento Energetico Residencial - Equipe Lumos (FIAP 2026) | Pietro Lorande (RM 569125), Luiz Otavio Brito Freixo (RM 569977), Maria Eduarda Lemos (RM 574094)
     </footer>
   </div>
+
+  <script>
+    const DADOS_FV = {dados_js};
+
+    function fmtBRL(v) {{
+      return 'R$ ' + Number(v).toLocaleString('pt-BR', {{ minimumFractionDigits: 2, maximumFractionDigits: 2 }});
+    }}
+    function fmtNum(v, c = 2) {{
+      return Number(v).toLocaleString('pt-BR', {{ minimumFractionDigits: c, maximumFractionDigits: c }});
+    }}
+
+    function inicializarSimulador() {{
+      const selHsp = document.getElementById('sim-hsp');
+      DADOS_FV.hsp_lista.forEach((item, idx) => {{
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${{item.cidade}}/${{item.uf}} (HSP ${{fmtNum(item.hsp, 1)}} kWh/m2/dia)`;
+        if (item.cidade.toLowerCase().includes('paulo') && item.uf === 'SP') opt.selected = true;
+        selHsp.appendChild(opt);
+      }});
+
+      const selMod = document.getElementById('sim-mod');
+      DADOS_FV.modulos.forEach(m => {{
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = `[${{m.id}}] ${{m.fabricante}} ${{m.modelo}} (${{m.potencia_wp}} Wp - ${{fmtBRL(m.preco_brl)}})`;
+        selMod.appendChild(opt);
+      }});
+      recalcularSimulador();
+    }}
+
+    function verificarPar(nMin, mod, inv, comBat) {{
+      if (comBat && !inv.compativel_bateria) return null;
+      const serieMax = Math.min(
+        Math.floor(inv.tensao_max_entrada_v / (mod.voc_v * 1.10)),
+        Math.floor(inv.faixa_mppt_max_v / mod.vmp_v)
+      );
+      const serieMin = Math.ceil(inv.faixa_mppt_min_v / (mod.vmp_v * 0.90));
+      const parMax = Math.min(inv.strings_por_mppt, Math.floor(inv.corrente_max_entrada_a / mod.imp_a));
+      if (parMax < 1 || serieMax < 1 || serieMin > serieMax) return null;
+      const nStrings = Math.ceil(nMin / serieMax);
+      if (nStrings > inv.numero_mppt * parMax) return null;
+      const porString = Math.max(Math.ceil(nMin / nStrings), serieMin);
+      const nFinal = nStrings * porString;
+      const pInst = (nFinal * mod.potencia_wp) / 1000.0;
+      const ratio = (pInst * 1000.0) / inv.potencia_nominal_w;
+      const ratioMin = inv.compativel_bateria ? 0.30 : 0.60;
+      if (pInst * 1000.0 > inv.potencia_max_fv_w) return null;
+      if (ratio < ratioMin || ratio > 1.35) return null;
+      return {{ n_modulos: nFinal, n_strings: nStrings, por_string: porString, p_inst: pInst, ratio: ratio }};
+    }}
+
+    function recalcularSimulador() {{
+      const hspObj = DADOS_FV.hsp_lista[Number(document.getElementById('sim-hsp').value)] || DADOS_FV.hsp_lista[0];
+      const consumoMes = Math.max(1, Number(document.getElementById('sim-consumo').value) || 455.31);
+      const pct = Math.min(100, Math.max(1, Number(document.getElementById('sim-pct').value) || 100));
+      const pr = Math.min(0.99, Math.max(0.10, (Number(document.getElementById('sim-pr').value) || 78) / 100.0));
+      const modId = document.getElementById('sim-mod').value;
+      const comBat = document.getElementById('sim-bat-ativo').value === '1';
+      const autonomiaH = Math.min(72, Math.max(1, Number(document.getElementById('sim-autonomia').value) || 12));
+      const tarifa = Math.max(0.10, Number(document.getElementById('sim-tarifa').value) || 0.92);
+
+      const eDia = consumoMes / 30.0;
+      const eDiaMeta = (consumoMes * (pct / 100.0)) / 30.0;
+      const pFv = eDiaMeta / (hspObj.hsp * pr);
+
+      const modsCand = modId === 'AUTO' ? DADOS_FV.modulos : DADOS_FV.modulos.filter(m => m.id === modId);
+      let melhor = null;
+      modsCand.forEach(mod => {{
+        const nMin = Math.ceil((pFv * 1000.0) / mod.potencia_wp - 1e-9);
+        DADOS_FV.inversores.forEach(inv => {{
+          const cfg = verificarPar(nMin, mod, inv, comBat);
+          if (cfg) {{
+            const custoEq = cfg.n_modulos * mod.preco_brl + inv.preco_brl;
+            if (!melhor || custoEq < melhor.custoEq) {{
+              melhor = {{ mod, inv, cfg, custoEq }};
+            }}
+          }}
+        }});
+      }});
+
+      const box = document.getElementById('sim-resultado');
+      if (!melhor) {{
+        box.innerHTML = '<strong>Incompatibilidade Tecnica (PB18):</strong> Nenhuma combinacao modulo x inversor atende aos limites eletricos para os parametros informados.';
+        return;
+      }}
+
+      let infoBatTxt = 'Sem armazenamento (On-Grid convencional, 0 kWh)';
+      let custoBat = 0;
+      if (comBat) {{
+        const eAut = eDia * (autonomiaH / 24.0);
+        let melhorBat = null;
+        DADOS_FV.baterias.forEach(b => {{
+          if (b.tensao_nominal_v >= melhor.inv.tensao_bateria_min_v && b.tensao_nominal_v <= melhor.inv.tensao_bateria_max_v) {{
+            const dod = b.dod_pct / 100.0;
+            const cBat = eAut / (dod * 0.95);
+            const cUtil = b.capacidade_kwh * dod;
+            const nBat = Math.ceil((eAut / 0.95) / cUtil - 1e-9);
+            const custoB = nBat * b.preco_brl;
+            if (!melhorBat || custoB < melhorBat.custoB) {{
+              melhorBat = {{ b, nBat, cBat, capNom: nBat * b.capacidade_kwh, capUtil: nBat * cUtil, custoB }};
+            }}
+          }}
+        }});
+        if (melhorBat) {{
+          custoBat = melhorBat.custoB;
+          infoBatTxt = `${{melhorBat.nBat}}x [${{melhorBat.b.id}}] ${{melhorBat.b.fabricante}} ${{melhorBat.b.modelo}} (${{fmtNum(melhorBat.capNom)}} kWh nominais / ${{fmtNum(melhorBat.capUtil)}} kWh uteis para ${{autonomiaH}}h -> ${{fmtBRL(custoBat)}})`;
+        }}
+      }}
+
+      const cEquip = melhor.custoEq + custoBat;
+      const cOutros = cEquip * 0.17 + 500.0 * melhor.cfg.p_inst + 800.0;
+      const cTotal = cEquip + cOutros;
+      const eGerDia = melhor.cfg.p_inst * hspObj.hsp * pr;
+      const eGerMes = eGerDia * 30.0;
+      const atendPct = (eGerMes / consumoMes) * 100.0;
+      const eComp = Math.min(eGerMes, consumoMes);
+      const eExc = Math.max(0, eGerMes - consumoMes);
+      const econMes = eComp * tarifa;
+      const econAno = econMes * 12.0;
+      const paybackTotal = cTotal / econAno;
+      const paybackEquip = cEquip / econAno;
+
+      box.innerHTML = `
+        <h3>Resultado da Simulacao em Tempo Real (${{hspObj.cidade}}/${{hspObj.uf}} - ${{comBat ? 'Com Baterias Hibrido' : 'Sem Baterias On-Grid'}})</h3>
+        <p style="margin:4px 0;"><strong>1. Dimensionamento FV:</strong> E_dia = <strong>${{fmtNum(eDia)}} kWh/dia</strong> | P_FV necessaria = <strong>${{fmtNum(pFv, 3)}} kWp</strong> | Instalada = <strong>${{fmtNum(melhor.cfg.p_inst, 2)}} kWp</strong> (${{melhor.cfg.n_modulos}}x [${{melhor.mod.id}}] ${{melhor.mod.fabricante}} ${{melhor.mod.modelo}} de ${{melhor.mod.potencia_wp}} Wp)</p>
+        <p style="margin:4px 0;"><strong>2. Inversor e Geracao:</strong> [${{melhor.inv.id}}] ${{melhor.inv.fabricante}} ${{melhor.inv.modelo}} (${{melhor.inv.potencia_nominal_w}} W, R_DC/AC = ${{fmtNum(melhor.cfg.ratio)}}) | Geracao: <strong>${{fmtNum(eGerDia)}} kWh/dia</strong> (<strong>${{fmtNum(eGerMes, 1)}} kWh/mes</strong> -> <strong>${{fmtNum(atendPct, 1)}}%</strong> do consumo | Compensada: ${{fmtNum(eComp)}} kWh/mes | Excedente: ${{fmtNum(eExc)}} kWh/mes)</p>
+        <p style="margin:4px 0;"><strong>3. Armazenamento:</strong> ${{infoBatTxt}}</p>
+        <p style="margin:4px 0;"><strong>4. Orcamento e Payback Simples:</strong> Equipamentos (Datasets): <strong>${{fmtBRL(cEquip)}}</strong> | Investimento Total: <strong>${{fmtBRL(cTotal)}}</strong> | Economia: <strong>${{fmtBRL(econMes)}}/mes (${{fmtBRL(econAno)}}/ano)</strong> | <span class="badge-ok">Payback Simples: ${{fmtNum(paybackTotal)}} anos (Total) / ${{fmtNum(paybackEquip)}} anos (So Equipamentos)</span></p>
+      `;
+    }}
+
+    window.addEventListener('DOMContentLoaded', inicializarSimulador);
+  </script>
 </body>
 </html>
 """

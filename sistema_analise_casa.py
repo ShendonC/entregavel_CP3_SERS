@@ -880,10 +880,13 @@ def novo_dimensionamento_fv():
 
     id_dim = salvar_dimensionamento_no_banco(id_imovel, r, loc, hsp_info)
     arq_txt = fv.exportar_proposta_txt(r, comp, imovel["apelido"])
-    arq_html = fv.exportar_proposta_html(r, comp, imovel["apelido"])
+    arq_html = fv.exportar_proposta_html(
+        r, comp, imovel["apelido"], cargas_residencia=obter_cargas_detalhadas_imovel(id_imovel)
+    )
+    abrir_proposta_no_navegador(arq_html)
     concluir(
         f"DIMENSIONAMENTO #{id_dim} SALVO EM dados_sistema.json!\n"
-        f"Proposta consolidada exportada com sucesso (PB21):\n"
+        f"Proposta consolidada exportada e aberta no navegador (PB21):\n"
         f"  - Relatorio TXT:  {arq_txt}\n"
         f"  - Proposta HTML:  {arq_html}"
     )
@@ -899,7 +902,7 @@ def tela_comparar_cenarios_fv():
     ds = fv.carregar_datasets_fv()
     loc = imovel.get("localizacao") or {"cidade": "São Paulo", "uf": "SP"}
     hsp_info = fv.obter_hsp(loc["cidade"], loc["uf"], ds["hsp"])
-    consumo = consumo_total_imovel(id_imovel) or 426.30
+    consumo = consumo_total_imovel(id_imovel) or 455.31
     pot_casa_w = potencia_instalada_imovel(id_imovel)
     autonomia = ler_validado("Autonomia desejada para o cenario com baterias (horas, ate 72) [12]...: ", fv.validar_autonomia, padrao="12")
     tarifa = ler_validado("Tarifa de energia em R$/kWh [0.92]...: ", fv.validar_tarifa, padrao="0.92")
@@ -915,8 +918,11 @@ def tela_comparar_cenarios_fv():
     )
     limpar_terminal()
     print(fv.formatar_comparacao_cenarios(comp, imovel["apelido"]))
-    arq_html = fv.exportar_proposta_html(comp["sem_bateria"], comp, imovel["apelido"])
-    concluir(f"Quadro comparativo e analise da Secao 9 atualizados em: {arq_html}")
+    arq_html = fv.exportar_proposta_html(
+        comp["sem_bateria"], comp, imovel["apelido"], cargas_residencia=obter_cargas_detalhadas_imovel(id_imovel)
+    )
+    abrir_proposta_no_navegador(arq_html)
+    concluir(f"Quadro comparativo e analise da Secao 9 atualizados e abertos no navegador: {arq_html}")
 
 
 def listar_dimensionamentos_fv():
@@ -941,6 +947,34 @@ def listar_dimensionamentos_fv():
     concluir()
 
 
+def obter_cargas_detalhadas_imovel(id_imovel):
+    """Retorna lista estruturada dos equipamentos associados ao imovel (PB01/PB02)."""
+    itens = []
+    for a in listar_associacoes_do_imovel(id_imovel).values():
+        eq = dados["equipamentos"].get(a.get("equipamento_id"))
+        if eq:
+            itens.append({
+                "nome": eq["nome"],
+                "categoria": eq["categoria"],
+                "potencia_w": float(eq["potencia"]),
+                "qtd": int(a["quantidade"]),
+                "horas_dia": float(a["tempo_uso"]),
+                "kwh_mes": round(calcular_consumo_associacao(a), 2),
+            })
+    return sorted(itens, key=lambda x: x["kwh_mes"], reverse=True)
+
+
+def abrir_proposta_no_navegador(caminho_html):
+    """Abre automaticamente a proposta HTML consolidada no navegador padrao."""
+    import webbrowser
+    try:
+        caminho_abs = os.path.abspath(caminho_html)
+        webbrowser.open(f"file:///{caminho_abs.replace(os.sep, '/')}")
+        return True
+    except Exception:
+        return False
+
+
 def tela_validar_datasets():
     try:
         ds = fv.carregar_datasets_fv()
@@ -951,11 +985,12 @@ def tela_validar_datasets():
     concluir()
 
 
-def executar_demonstracao_sprint_review(pausar_no_final=True):
+def executar_demonstracao_sprint_review(pausar_no_final=True, abrir_navegador=False):
     """
     Secao 7 (Sprint Review - 15 etapas obrigatorias) + Secao 9 (Questao Final):
     Executa de ponta a ponta o caso completo usando a residencia ja cadastrada no sistema,
-    apresenta os 15 itens da Sprint Review, salva no banco JSON e exporta os relatorios.
+    apresenta os 15 itens da Sprint Review, salva no banco JSON, exporta os relatorios
+    e abre automaticamente o navegador quando solicitado.
     """
     carregar_dados()
     ds = fv.carregar_datasets_fv()
@@ -966,7 +1001,7 @@ def executar_demonstracao_sprint_review(pausar_no_final=True):
     consumo_mes = consumo_total_imovel(id_imovel)
     consumo_dia = consumo_diario_imovel(id_imovel)
     pot_casa_w = potencia_instalada_imovel(id_imovel)
-    ranking = ranking_consumo_imovel(id_imovel)
+    cargas_det = obter_cargas_detalhadas_imovel(id_imovel)
 
     comp = fv.comparar_cenarios(
         consumo_mes,
@@ -987,25 +1022,43 @@ def executar_demonstracao_sprint_review(pausar_no_final=True):
         salvar_dimensionamento_no_banco(id_imovel, com_bat, loc, hsp_info)
 
     arq_txt = fv.exportar_proposta_txt(sem_bat, comp, imovel["apelido"])
-    arq_html = fv.exportar_proposta_html(sem_bat, comp, imovel["apelido"])
+    arq_html = fv.exportar_proposta_html(
+        sem_bat, comp, imovel["apelido"], cargas_residencia=cargas_det
+    )
+
+    mod_a, inv_a, cfg_a = sem_bat["selecao"]["modulo"], sem_bat["selecao"]["inversor"], sem_bat["selecao"]["config"]
+    inv_b, arm_b = com_bat["selecao"]["inversor"], com_bat["armazenamento"]
+    bat_b = arm_b["bateria"]
 
     print("=" * 88)
-    print("  ROTEIRO DE DEMONSTRACAO AO VIVO - SPRINT REVIEW (15 ITENS + QUESTAO 9)")
+    print("  ROTEIRO DE DEMONSTRACAO AO VIVO - SPRINT REVIEW (15 ETAPAS + QUESTAO 9)")
     print("  Equipe Lumos: Pietro Lorande (RM569125) | Luiz Otavio (RM569977) | Maria Eduarda (RM574094)")
     print("=" * 88)
-    print(f"\n[ITEM 1 e 2] Selecao da Residencia, Equipamentos e Consumo Calculado (PB01 / PB02):")
-    print(f"  - Residencia selecionada: #{id_imovel} {imovel['apelido']} ({imovel['endereco']}, {imovel['numero']} - {loc['cidade']}/{loc['uf']})")
-    print(f"  - Potencia instalada da residencia: {fv.num(pot_casa_w, 0)} W ({fv.num(pot_casa_w/1000, 3)} kW)")
-    print(f"  - Consumo mensal calculado (E_mes): {fv.num(consumo_mes)} kWh/mes")
-    print(f"  - Consumo medio diario (E_dia = E_mes / 30): {fv.num(consumo_dia, 2)} kWh/dia")
-    print("  - Principais cargas associadas:")
-    for pos, (nome_eq, kwh_eq) in enumerate(ranking[:5], 1):
-        print(f"      {pos}. {nome_eq}: {fv.num(kwh_eq)} kWh/mes")
+    print(f"  [ETAPA 01] Selecao da Residencia (PB01): #{id_imovel} {imovel['apelido']} ({imovel['endereco']}, {imovel['numero']} - {loc['cidade']}/{loc['uf']})")
+    print(f"  [ETAPA 02] Equipamentos e Consumo (PB02): {len(cargas_det)} tipos ({sum(c['qtd'] for c in cargas_det)} un.) | Pot. Casa: {fv.num(pot_casa_w, 0)} W ({fv.num(pot_casa_w/1000, 3)} kW) | E_mes = {fv.num(consumo_mes)} kWh/mes | E_dia = {fv.num(consumo_dia, 2)} kWh/dia")
+    for pos, c_it in enumerate(cargas_det, 1):
+        print(f"             {pos}. {c_it['nome']} ({c_it['qtd']}x {c_it['potencia_w']:.0f}W, {c_it['horas_dia']}h/dia) -> {fv.num(c_it['kwh_mes'])} kWh/mes")
+    print(f"  [ETAPA 03] Dimensionamento FV (PB04): P_FV = E_dia / (HSP * PR) = {fv.num(consumo_dia, 3)} / ({fv.num(hsp_info['hsp'])} * {fv.num(sem_bat['pr'])}) = {fv.num(sem_bat['p_fv'], 3)} kWp")
+    print(f"  [ETAPA 04] HSP e PR Utilizados (PB03): HSP = {fv.num(hsp_info['hsp'])} kWh/m2/dia ({hsp_info['fonte']}) | PR = {fv.num(sem_bat['pr']*100, 0)}% (NT EPE DEA-SEE 009/2023)")
+    print(f"  [ETAPA 05] Consulta aos Datasets (PB05/PB07/PB12): {len(ds['modulos'])} modulos (modulos.csv), {len(ds['inversores'])} inversores (inversores.csv), {len(ds['baterias'])} baterias (baterias.csv)")
+    print(f"  [ETAPA 06] Selecao dos Modulos (PB06): {cfg_a['n_modulos']}x [{mod_a['id']}] {mod_a['fabricante']} {mod_a['modelo']} ({mod_a['potencia_wp']:.0f} Wp) -> P_inst = {fv.num(sem_bat['p_inst'], 3)} kWp")
+    print(f"  [ETAPA 07] Inversor e Compatibilidade (PB07): On-Grid [{inv_a['id']}] {inv_a['fabricante']} {inv_a['modelo']} (R_DC/AC = {fv.num(cfg_a['ratio_dc_ac'])}) | Hibrido [{inv_b['id']}] {inv_b['fabricante']} {inv_b['modelo']}")
+    print(f"  [ETAPA 08] Geracao Estimada (PB08): E_gerada,dia = {fv.num(sem_bat['geracao_dia'], 2)} kWh/dia | E_gerada,mes = {fv.num(sem_bat['geracao_mes'], 2)} kWh/mes")
+    print(f"  [ETAPA 09] Comparacao Geracao x Consumo (PB09): Atendimento = {fv.num(sem_bat['comparacao_geracao']['atendimento_pct'], 2)}% | Compensada = {fv.num(sem_bat['comparacao_geracao']['energia_compensada_kwh_mes'])} kWh/mes | Excedente = {fv.num(sem_bat['comparacao_geracao']['energia_excedente_kwh_mes'])} kWh/mes")
+    print(f"  [ETAPA 10] Opcao Sem Baterias (PB10): Sistema On-Grid convencional (0 kWh armazenados, custo de baterias R$ 0,00)")
+    print(f"  [ETAPA 11] Opcao Com Baterias e Autonomia (PB11): Autonomia {arm_b['autonomia_h']:.0f}h (E_aut = {fv.num(arm_b['energia_autonomia_kwh'], 2)} kWh, C_bat = {fv.num(arm_b['c_bat_kwh'], 2)} kWh) -> {arm_b['n_baterias']}x [{bat_b['id']}] {bat_b['fabricante']} {bat_b['modelo']} ({fv.num(arm_b['capacidade_instalada_kwh'])} kWh nominais / {fv.num(arm_b['capacidade_util_kwh'])} kWh uteis)")
+    print(f"  [ETAPA 12] Orcamento Automatico (PB13): Sem Baterias = {fv.brl(sem_bat['orcamento']['c_equipamentos'])} (equip.) / {fv.brl(sem_bat['orcamento']['c_total'])} (total) | Com Baterias = {fv.brl(com_bat['orcamento']['c_equipamentos'])} (equip.) / {fv.brl(com_bat['orcamento']['c_total'])} (total)")
+    print(f"  [ETAPA 13] Comparacao dos Cenarios (PB14): Diferenca de +{fv.brl(comp['diferenca_investimento_total_brl'])} (+{fv.num(comp['acrescimo_percentual'], 1)}%) no sistema com baterias")
+    print(f"  [ETAPA 14] Economia e Payback Simples (PB15/PB16): Economia = {fv.brl(sem_bat['economia']['economia_mensal_brl'])}/mes ({fv.brl(sem_bat['economia']['economia_anual_brl'])}/ano) | Payback Total: {fv.num(sem_bat['payback']['payback_simples_anos'])} anos (Sem Bat.) vs {fv.num(com_bat['payback']['payback_simples_anos'])} anos (Com Bat.)")
+    print(f"  [ETAPA 15] Proposta Final ao Cliente (PB17/PB21): Exportada em '{ os.path.basename(arq_txt) }' e '{ os.path.basename(arq_html) }'")
 
     print("\n" + fv.formatar_proposta(sem_bat, f"{imovel['apelido']} [CENARIO 1: SEM BATERIAS]"))
     print("\n" + fv.formatar_proposta(com_bat, f"{imovel['apelido']} [CENARIO 2: COM BATERIAS - 12h AUTONOMIA]"))
     print("\n" + fv.formatar_comparacao_cenarios(comp, imovel["apelido"]))
     print(f"\n[ARQUIVOS EXPORTADOS (PB21)]:\n  - {arq_txt}\n  - {arq_html}")
+
+    if abrir_navegador:
+        abrir_proposta_no_navegador(arq_html)
 
     if pausar_no_final:
         concluir()
@@ -1038,7 +1091,7 @@ def menu_residencia():
         ("ENERGIA SOLAR FOTOVOLTAICA, ORCAMENTO E PAYBACK (PB01 A PB21)", lambda: executar_menu("ENERGIA SOLAR FOTOVOLTAICA - SPRINT 3", [
             ("Novo dimensionamento / proposta consolidada (PB01 a PB21)", novo_dimensionamento_fv),
             ("Comparar cenarios: Sem Baterias vs Com Baterias (PB14 + Questao 9)", tela_comparar_cenarios_fv),
-            ("Executar Demonstracao Completa da Sprint Review (15 itens + Exportacao)", lambda: executar_demonstracao_sprint_review(True)),
+            ("Executar Demonstracao Completa da Sprint Review (15 itens + Abrir HTML)", lambda: executar_demonstracao_sprint_review(True, abrir_navegador=True)),
             ("Ver dimensionamentos salvos de um imovel (PB20)", listar_dimensionamentos_fv),
             ("Consultar e validar datasets de modulos, inversores e baterias (PB05/PB07/PB12)", tela_validar_datasets),
         ])),
@@ -1050,7 +1103,7 @@ def iniciar_user():
         print(" ==== SISTEMA DE DIMENSIONAMENTO ENERGETICO RESIDENCIAL - EQUIPE LUMOS ==== \n")
         print("1. CADASTRO DE CONTA")
         print("2. LOG IN (Conta pronta p/ Sprint Review: demo@lumos.com / senha: 1234)")
-        print("3. EXECUTAR DEMONSTRACAO COMPLETA DA SPRINT REVIEW (15 ITENS + QUESTAO 9)")
+        print("3. EXECUTAR DEMONSTRACAO COMPLETA DA SPRINT REVIEW (15 ITENS + ABRIR NAVEGADOR)")
         print("4. RODAR TESTES AUTOMATIZADOS (QA - CP1 + CP2 + CP3)")
         print("5. SAIR DO SISTEMA")
         opcao = ler_opcao_inteira(1, 5)
@@ -1064,7 +1117,7 @@ def iniciar_user():
             else:
                 concluir()
         elif opcao == 3:
-            executar_demonstracao_sprint_review(True)
+            executar_demonstracao_sprint_review(True, abrir_navegador=True)
         elif opcao == 4:
             import testes
             testes.rodar_todos_os_testes()
@@ -1077,6 +1130,18 @@ def iniciar_user():
 if __name__ == "__main__":
     carregar_dados()
     if "--demo" in sys.argv:
-        executar_demonstracao_sprint_review(pausar_no_final=False)
+        abrir = "--abrir-html" in sys.argv
+        executar_demonstracao_sprint_review(pausar_no_final=False, abrir_navegador=abrir)
+    elif "--apresentacao" in sys.argv:
+        import testes
+        testes.rodar_todos_os_testes()
+        print("\n")
+        executar_demonstracao_sprint_review(pausar_no_final=False, abrir_navegador=True)
+        print("\n" + "=" * 88)
+        print("  NAVEGADOR ABERTO COM A PROPOSTA INTERATIVA (proposta_cliente.html)!")
+        print("  SESSAO INICIADA AUTOMATICAMENTE COMO: demo@lumos.com (Residencia Familia Silva - SP)")
+        print("=" * 88 + "\n")
+        sessao["email_logado"] = "demo@lumos.com"
+        menu_residencia()
     else:
         iniciar_user()

@@ -25,18 +25,28 @@ Sistema integrado em Python que cadastra usuarios, residencias e equipamentos el
 
 ---
 
-## 1. Como executar
+## 1. Como executar (1 Clique para a Sprint Review)
 
 Requer **Python 3.9 ou superior** (utiliza apenas a biblioteca padrao do Python, sem necessidade de `pip install`).
 
+- **No Windows (Recomendado para a Sprint Review):** Basta dar **duplo clique em `RODAR_PROJETO.bat`**! Ele executa automaticamente:
+  1. A bateria completa de testes (`testes.py`) e validacao dos datasets;
+  2. O roteiro completo das **15 Etapas da Sprint Review + Questao 9** no terminal;
+  3. A abertura automatica de **`proposta_cliente.html` no navegador** (com a Proposta Consolidada, o **Simulador Web Interativo em tempo real**, o Roteiro Guiado de 15 etapas e o Comparativo de Cenarios);
+  4. O menu interativo no terminal ja logado com a residencia pre-cadastrada (`Residencia Familia Silva - SP`).
+
 ```bash
-# 1. Usar o sistema interativo pelo menu completo (conta pronta: demo@lumos.com / senha: 1234)
+# Ou via linha de comando:
+# 1. Modo Apresentacao Completo (Testes + 15 Etapas + Abre Navegador + Menu Logado)
+python sistema_analise_casa.py --apresentacao
+
+# 2. Usar o sistema interativo pelo menu inicial (conta pronta: demo@lumos.com / senha: 1234)
 python sistema_analise_casa.py
 
-# 2. Executar direto o roteiro completo da Sprint Review (15 itens + Questao 9 + exportacao HTML/TXT)
+# 3. Executar apenas o relatorio das 15 etapas no terminal e atualizar HTML/TXT
 python sistema_analise_casa.py --demo
 
-# 3. Rodar todos os testes automatizados (CP1 + CP2 + Sprint 3 Final), sem interacao
+# 4. Rodar todos os testes automatizados (CP1 + CP2 + Sprint 3 Final), sem interacao
 python testes.py
 ```
 
@@ -48,12 +58,13 @@ python testes.py
 
 ```
 projeto/
+├── RODAR_PROJETO.bat           <- atalho de 1 clique: roda testes, 15 etapas, abre navegador e menu logado
 ├── sistema_analise_casa.py     <- telas, menus, persistencia JSON e roteiro da Sprint Review
 ├── fotovoltaico.py             <- motor de dimensionamento FV, datasets, comparacao, orcamento e payback
 ├── testes.py                   <- bateria de testes automatizados (CP1 + CP2 + Sprint 3 PB01-PB21)
 ├── dados_sistema.json          <- banco persistente com residencia pre-cadastrada e cenarios salvos (PB01/PB20)
 ├── proposta_cliente.txt        <- relatorio consolidado exportado automaticamente (PB17/PB21)
-├── proposta_cliente.html       <- pagina web consolidada da proposta e comparacao de cenarios (PB19/PB21)
+├── proposta_cliente.html       <- pagina web interativa com simulador ao vivo, 15 etapas e comparacao (PB19/PB21)
 └── dados_fv/                   <- datasets estruturados e rastreaveis da parte solar (PB05/PB07/PB12)
     ├── modulos.csv             <- 10 modulos fotovoltaicos reais com precos e fontes
     ├── inversores.csv          <- 8 inversores (on-grid e hibridos) com limites eletricos, MPPT e eficiencia

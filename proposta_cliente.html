@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <title>Proposta Fotovoltaica Consolidada - Residencia Familia Silva (SP) | Equipe Lumos FIAP</title>
+  <title>Proposta Fotovoltaica & Simulador Sprint 3 - Residencia Familia Silva (SP) | Equipe Lumos FIAP</title>
   <style>
     :root {
       --bg: #f8fafc;
@@ -23,16 +23,45 @@
       color: var(--ink);
       line-height: 1.5;
     }
-    .container { max-width: 1120px; margin: 0 auto; }
+    .container { max-width: 1180px; margin: 0 auto; }
     header {
       background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
       color: #fff;
       padding: 28px 32px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
     }
     header h1 { margin: 0 0 8px 0; font-size: 24px; }
     header p { margin: 4px 0; color: #cbd5e1; font-size: 14px; }
+    .nav-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      background: var(--surface);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .nav-bar a, .btn-action {
+      text-decoration: none;
+      background: #f1f5f9;
+      color: #1e3a8a;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 8px 14px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      cursor: pointer;
+    }
+    .nav-bar a:hover, .btn-action:hover { background: #e0f2fe; border-color: #0284c7; }
+    .btn-primary { background: #0284c7; color: #fff; border-color: #0284c7; }
+    .btn-primary:hover { background: #0369a1; color: #fff; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -62,8 +91,8 @@
       padding-bottom: 10px;
       color: #1e3a8a;
     }
-    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 14px; }
-    th, td { border: 1px solid var(--border); padding: 10px 12px; text-align: left; vertical-align: top; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }
+    th, td { border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }
     th { background: #f1f5f9; font-weight: 600; }
     .badge-ok { background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
     .badge-warn { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
@@ -75,28 +104,79 @@
       margin-top: 18px;
     }
     .callout h3 { margin: 0 0 8px 0; font-size: 16px; color: #0369a1; }
+    .sim-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .sim-field label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 4px; }
+    .sim-field select, .sim-field input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      font-size: 13.5px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .step-box {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      background: #f8fafc;
+    }
+    .step-box p { margin: 6px 0 0 0; font-size: 13px; color: #334155; }
+    .step-num {
+      display: inline-block;
+      background: #1e3a8a;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
     footer { text-align: center; font-size: 13px; color: var(--muted); padding: 16px 0; }
+    @media print { .nav-bar, #secao-simulador { display: none; } body { padding: 0; } }
   </style>
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Proposta Tecnica e Economica - Sistema Solar Fotovoltaico (Residencia Familia Silva (SP))</h1>
-      <p><strong>Disciplina:</strong> Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves) - Sprint 3 Final</p>
-      <p><strong>Equipe Lumos (FIAP):</strong> Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)</p>
-      <p><strong>Localidade:</strong> São Paulo/SP | <strong>Data de emissao:</strong> 2026-10-15 19:48</p>
+      <div>
+        <h1>Sistema de Dimensionamento e Orcamento Fotovoltaico (Residencia Familia Silva (SP))</h1>
+        <p><strong>Disciplina:</strong> Solucoes em Energias Renovaveis e Sustentaveis (Prof. Alvaro Goncalves) - Sprint 3 Final (PB01 a PB21)</p>
+        <p><strong>Equipe Lumos (FIAP):</strong> Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)</p>
+        <p><strong>Localidade Base:</strong> São Paulo/SP (HSP 5,00 kWh/m2/dia) | <strong>Emissao:</strong> 2026-10-15 20:32</p>
+      </div>
+      <div>
+        <button class="btn-action btn-primary" onclick="window.print()">Imprimir / Salvar Proposta PDF</button>
+      </div>
     </header>
+
+    <nav class="nav-bar">
+      <a href="#secao-proposta">1. Proposta & Orcamento (PB13-PB17)</a>
+      <a href="#secao-simulador">2. Simulador Interativo ao Vivo (PB01-PB19)</a>
+      <a href="#secao-comparacao">3. Comparacao Sem vs Com Baterias & Secao 9 (PB14)</a>
+      <a href="#secao-roteiro">4. Roteiro das 15 Etapas da Sprint Review</a>
+      <a href="#secao-datasets">5. Equipamentos da Casa & Datasets CSV (PB05/PB07/PB12)</a>
+    </nav>
 
     <div class="grid">
       <div class="kpi">
         <div class="label">Consumo Mensal / Diario (PB02)</div>
         <div class="value">455,31 kWh/mes</div>
-        <div class="sub">E_dia: 15,18 kWh/dia | Pot. Casa: 9,01 kW</div>
+        <div class="sub">E_dia: 15,18 kWh/dia | Pot. Casa: 9,013 kW (9.013 W)</div>
       </div>
       <div class="kpi">
         <div class="label">Potencia FV Instalada (PB04/PB06)</div>
         <div class="value">4,05 kWp</div>
-        <div class="sub">Necessaria: 3,89 kWp | HSP: 5,00 | PR: 78%</div>
+        <div class="sub">Necessaria: 3,892 kWp | HSP: 5,00 | PR: 78%</div>
       </div>
       <div class="kpi">
         <div class="label">Geracao Estimada (PB08/PB09)</div>
@@ -106,27 +186,74 @@
       <div class="kpi">
         <div class="label">Investimento & Payback Simples (PB13/PB16)</div>
         <div class="value">R$ 11.590,88</div>
-        <div class="sub">Economia: R$ 418,89/mes | Retorno: 2,31 anos</div>
+        <div class="sub">Economia: R$ 418,89/mes | Payback: 2,31 anos</div>
       </div>
     </div>
 
-    <section class="card">
+    <section class="card" id="secao-simulador">
+      <h2>Simulador Interativo para Demonstracao ao Vivo (PB01 a PB19)</h2>
+      <p style="margin-top:0; color:var(--muted); font-size:13.5px;">Altere qualquer parametro abaixo (localidade/HSP, consumo, PR, modulo, inversor ou adicione baterias) para recalcular instantaneamente usando os datasets reais do projeto:</p>
+      <div class="sim-grid">
+        <div class="sim-field">
+          <label>Localidade / HSP (PB03)</label>
+          <select id="sim-hsp" onchange="recalcularSimulador()"></select>
+        </div>
+        <div class="sim-field">
+          <label>Consumo Mensal E_mes (kWh/mes) (PB02)</label>
+          <input type="number" id="sim-consumo" value="455.31" min="10" step="10" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Meta de Atendimento (%) (PB04)</label>
+          <input type="number" id="sim-pct" value="100" min="1" max="100" step="5" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Performance Ratio PR (%) (PB03)</label>
+          <input type="number" id="sim-pr" value="78" min="50" max="95" step="1" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Modulo Fotovoltaico (PB05/PB06)</label>
+          <select id="sim-mod" onchange="recalcularSimulador()">
+            <option value="AUTO">Selecao Otima Automatica (Menor Custo Compativel)</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label>Armazenamento em Baterias (PB10)</label>
+          <select id="sim-bat-ativo" onchange="recalcularSimulador()">
+            <option value="0">Sem Baterias (On-Grid Convencional)</option>
+            <option value="1">Com Baterias (Hibrido + Backup)</option>
+          </select>
+        </div>
+        <div class="sim-field">
+          <label>Autonomia de Baterias (horas) (PB11)</label>
+          <input type="number" id="sim-autonomia" value="12" min="1" max="72" step="1" oninput="recalcularSimulador()">
+        </div>
+        <div class="sim-field">
+          <label>Tarifa de Energia (R$/kWh) (PB15)</label>
+          <input type="number" id="sim-tarifa" value="0.92" min="0.20" max="5.00" step="0.05" oninput="recalcularSimulador()">
+        </div>
+      </div>
+      <div id="sim-resultado" class="callout" style="margin-top:12px;"></div>
+    </section>
+
+    <section class="card" id="secao-proposta">
       <h2>1. Especificacao Tecnica do Sistema Dimensionado (PB03 a PB12)</h2>
       <table>
         <tbody>
-          <tr><th style="width:28%">Recurso Solar (HSP e PR)</th><td><strong>São Paulo/SP</strong>: HSP = 5,00 kWh/m2/dia (CRESESB/SunData (via tabela publicada))<br><small>PR = 0,78 (78%) adotado conforme Nota Tecnica EPE DEA-SEE 009/2023 e manual CRESESB/CEPEL (faixa tipica residencial de 75% a 80%), contabilizando perdas termicas nos modulos (~8%), sujeira e sombreamento leve (~5%), quedas ohmicas em cabos CC/CA (~3%), mismatch (~2%) e eficiencia de conversao do inversor (~2% a 4%).</small></td></tr>
-          <tr><th>Modulos Fotovoltaicos</th><td><strong>10x [FV006] Trina Solar TSM-405DE09 (Vertex S)</strong> (405 Wp, Eficiencia 21,10%, Voc 41,20 V, Vmp 34,20 V, Imp 11,85 A)<br>Arranjo: N minimo = 10 -> N instalado = 10 (1 string(s) de 10 modulos em serie)</td></tr>
-          <tr><th>Inversor e Compatibilidade</th><td><strong>[INV001] Growatt MIC 3000TL-X</strong> (Tipo: on-grid, Potencia Nominal: 3000 W, Max FV: 4200 W, Eficiencia: 97,6%)<br>Verificacao Eletrica: Voc string (frio) = 453,2 V (limite 500 V) | Vmp string = 342,0 V (MPPT 50-500 V) | Razao R_DC/AC = 1,35</td></tr>
-          <tr><th>Comparacao Geracao x Consumo</th><td>Consumo Mensal: 455,31 kWh/mes | Geracao Mensal: 473,85 kWh/mes (104,1%)<br>Energia Efetivamente Compensada: <strong>455,31 kWh/mes</strong> | Excedente Injetado na Rede: <strong>18,54 kWh/mes</strong></td></tr>
+          <tr><th style="width:28%">Residencia e Demanda (PB01 / PB02)</th><td><strong>Residencia Familia Silva (SP)</strong> | Consumo Mensal (E_mes): <strong>455,31 kWh/mes</strong> | Consumo Diario (E_dia = E_mes / 30): <strong>15,18 kWh/dia</strong> | Potencia Instalada da Casa: <strong>9.013 W (9,013 kW)</strong></td></tr>
+          <tr><th>Recurso Solar (HSP e PR - PB03)</th><td><strong>São Paulo/SP</strong>: HSP = <strong>5,00 kWh/m2/dia</strong> (CRESESB/SunData (via tabela publicada)) | PR = <strong>78%</strong><br><small>PR = 0,78 (78%) adotado conforme Nota Tecnica EPE DEA-SEE 009/2023 e manual CRESESB/CEPEL (faixa tipica residencial de 75% a 80%), contabilizando perdas termicas nos modulos (~8%), sujeira e sombreamento leve (~5%), quedas ohmicas em cabos CC/CA (~3%), mismatch (~2%) e eficiencia de conversao do inversor (~2% a 4%).</small></td></tr>
+          <tr><th>Potencia FV Necessaria (PB04)</th><td><code>P_FV = E_dia / (HSP x PR) = 15,177 / (5,00 x 0,78)</code> = <strong>3,892 kWp</strong></td></tr>
+          <tr><th>Modulos Fotovoltaicos (PB05 / PB06)</th><td><strong>10x [FV006] Trina Solar TSM-405DE09 (Vertex S)</strong> (405 Wp, Eficiencia 21,10%, Voc 41,20 V, Vmp 34,20 V, Imp 11,85 A)<br>Dimensionamento: <code>N_mod = teto[(3,892 x 1000) / 405] = 10</code> -> Instalado: <strong>10 modulos</strong> (1 string(s) de 10 modulos) -> <strong>P_inst = 4,050 kWp</strong></td></tr>
+          <tr><th>Inversor e Compatibilidade (PB07)</th><td><strong>[INV001] Growatt MIC 3000TL-X</strong> (Tipo: on-grid, Potencia Nominal: 3000 W, Max FV: 4200 W, Eficiencia: 97,6%)<br>Verificacao Eletrica: Voc string (frio +10%) = 453,2 V (limite 500 V) | Vmp string = 342,0 V (MPPT 50-500 V) | Razao <code>R_DC/AC = P_inst / P_inv = 1,35</code></td></tr>
+          <tr><th>Geracao e Atendimento (PB08 / PB09)</th><td>Geracao Diaria: <strong>15,79 kWh/dia</strong> | Geracao Mensal: <strong>473,85 kWh/mes</strong> (Atendimento: <strong>104,1%</strong> do consumo)<br>Energia Efetivamente Compensada na Fatura: <strong>455,31 kWh/mes</strong> | Excedente Injetado na Rede (Creditos GD): <strong>18,54 kWh/mes</strong></td></tr>
         </tbody>
       </table>
     </section>
 
     <section class="card">
-      <h2>2. Orcamento Detalhado (PB13) e Indicadores Economicos (PB15 / PB16)</h2>
+      <h2>2. Orcamento Detalhado (PB13) e Indicadores Economicos / Payback Simples (PB15 / PB16)</h2>
       <table>
         <thead>
-          <tr><th>Categoria</th><th>Equipamento / Descricao e Fonte</th><th style="text-align:center">Qtd</th><th style="text-align:right">Preco Unitario</th><th style="text-align:right">Subtotal</th></tr>
+          <tr><th>Categoria</th><th>Equipamento / Descricao e Fonte Rastreavel</th><th style="text-align:center">Qtd</th><th style="text-align:right">Preco Unitario</th><th style="text-align:right">Subtotal</th></tr>
         </thead>
         <tbody>
           <tr><td>Modulo Fotovoltaico</td><td><strong>[FV006] Trina Solar TSM-405DE09 (Vertex S)</strong><br><small>Minha Casa Solar (2026-10-01) https://www.minhacasasolar.com.br/painel-solar-405w-monocristalino-half-cell-trina-solar-tsm-405de09-82174</small></td><td style='text-align:center'>10</td><td style='text-align:right'>R$ 590,32</td><td style='text-align:right'><strong>R$ 5.903,20</strong></td></tr>
@@ -137,47 +264,51 @@
 <tr><td>Custos Complementares</td><td>Instalacao (mao de obra) <small>(R$ 500/kWp)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 2.025,00</td><td style='text-align:right'>R$ 2.025,00</td></tr>
 <tr><td>Custos Complementares</td><td>Projeto e homologacao <small>(valor fixo)</small></td><td style='text-align:center'>1</td><td style='text-align:right'>R$ 800,00</td><td style='text-align:right'>R$ 800,00</td></tr>
 
-          <tr style="background:#f8fafc"><td colspan="4" style="text-align:right"><strong>SUBTOTAL DE EQUIPAMENTOS (DATASETS)</strong></td><td style="text-align:right"><strong>R$ 7.492,20</strong></td></tr>
-          <tr style="background:#e0f2fe"><td colspan="4" style="text-align:right"><strong>INVESTIMENTO TOTAL ESTIMADO DO PROJETO</strong></td><td style="text-align:right"><strong>R$ 11.590,88</strong></td></tr>
+          <tr style="background:#f8fafc"><td colspan="4" style="text-align:right"><strong>CUSTO TOTAL DOS EQUIPAMENTOS (SOMA DOS ITENS DO DATASET: Custo_total = Sigma Custo_item)</strong></td><td style="text-align:right"><strong>R$ 7.492,20</strong></td></tr>
+          <tr style="background:#e0f2fe"><td colspan="4" style="text-align:right"><strong>INVESTIMENTO TOTAL ESTIMADO DO PROJETO (EQUIPAMENTOS + ESTRUTURA, INSTALACAO E HOMOLOGACAO)</strong></td><td style="text-align:right"><strong>R$ 11.590,88</strong></td></tr>
         </tbody>
       </table>
       <div class="callout">
         <h3>Estimativa de Economia e Payback Simples (PB15 / PB16)</h3>
         <p><strong>Tarifa de Energia:</strong> R$ 0,92/kWh (Tarifa convencional B1 residencial com impostos (referencia ANEEL / Enel SP 2026)) | <strong>Energia Compensada:</strong> 455,31 kWh/mes</p>
-        <p><strong>Economia Mensal Estimada:</strong> R$ 418,89/mes | <strong>Economia Anual Estimada:</strong> R$ 5.026,68/ano</p>
-        <p><strong>Payback Simples (Investimento Total / Economia Anual):</strong> <span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span> (Apenas equipamentos: 1,49 anos)</p>
+        <p><strong>Economia Mensal Estimada:</strong> <code>455,31 x R$ 0,92</code> = <strong>R$ 418,89/mes</strong> | <strong>Economia Anual Estimada:</strong> <strong>R$ 5.026,68/ano</strong></p>
+        <p><strong>Payback Simples (Investimento Total / Economia Anual):</strong> <span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span> &nbsp;|&nbsp; <strong>Payback Simples (Apenas Equipamentos do Dataset):</strong> <span class="badge-ok">1,49 anos</span></p>
         <p><small>Resultado calculado como PAYBACK SIMPLES (Investimento / Economia_anual). Trata-se de uma estimativa preliminar de tempo de retorno e NAO representa previsao financeira exata (nao inclui taxa de desconto/VPL, inflacao energetica, degradacao anual dos modulos nem custos de substituicao de baterias ao longo de 25 anos).</small></p>
       </div>
     </section>
 
     
-        <section class="card">
-          <h2>Comparacao de Cenarios (PB14): Sem Baterias vs. Com Baterias</h2>
+        <section class="card" id="secao-comparacao">
+          <h2>3. Comparacao de Cenarios (PB14) e Questao Final da Sprint Review (Secao 9)</h2>
           <table>
             <thead>
               <tr>
                 <th>Indicador Tecnico / Economico</th>
-                <th>Cenario 1: Sem Baterias (On-Grid)</th>
-                <th>Cenario 2: Com Baterias (Hibrido)</th>
+                <th>Cenario 1: Sem Baterias (On-Grid Convencional)</th>
+                <th>Cenario 2: Com Baterias (Hibrido + Backup 12h)</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Potencia FV Necessaria / Instalada</td><td>3,892 kWp / <strong>4,050 kWp</strong></td><td>3,892 kWp / <strong>4,050 kWp</strong></td></tr>
-              <tr><td>Modulos Fotovoltaicos</td><td>10x Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td><td>10x Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td></tr>
-              <tr><td>Inversor Selecionado</td><td>[INV001] Growatt MIC 3000TL-X (on-grid, 3000 W, efic. 97,6%)</td><td>[INV006] Deye SUN-5K-SG04LP1-EU-SM2 (hibrido, 5000 W, efic. 97,6%)</td></tr>
-              <tr><td>Geracao Estimada (Dia / Mes)</td><td>15,79 kWh/dia | 473,9 kWh/mes</td><td>15,79 kWh/dia | 473,9 kWh/mes</td></tr>
-              <tr><td>Atendimento / Energia Compensada</td><td>104,1% (455,31 kWh/mes)</td><td>104,1% (455,31 kWh/mes)</td></tr>
-              <tr><td>Armazenamento (Baterias)</td><td>Sem armazenamento (0 kWh)</td><td>2x [BAT005] Deye SE-F5 (10,24 kWh nominais / 9,22 kWh uteis)</td></tr>
-              <tr><td>Autonomia de Backup</td><td>0 h (depende da rede eletrica)</td><td><strong>12,0 horas</strong> (7,59 kWh)</td></tr>
-              <tr><td>Custo dos Equipamentos</td><td>R$ 7.492,20</td><td>R$ 26.062,20</td></tr>
-              <tr><td>Investimento Total Estimado</td><td><strong>R$ 11.590,88</strong></td><td><strong>R$ 33.317,78</strong> (+R$ 21.726,90 / +187,4%)</td></tr>
-              <tr><td>Economia Mensal / Anual</td><td>R$ 418,89/mes | R$ 5.026,68/ano</td><td>R$ 418,89/mes | R$ 5.026,68/ano</td></tr>
-              <tr><td>Payback Simples Estimado</td><td><span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span></td><td><span class="badge-warn">6.63 anos (~6 anos e 8 meses)</span></td></tr>
+              <tr><td>Demanda da Residencia (PB01/PB02)</td><td>455,31 kWh/mes (15,18 kWh/dia) | 9.013 W</td><td>455,31 kWh/mes (15,18 kWh/dia) | 9.013 W</td></tr>
+              <tr><td>Potencia FV Necessaria / Instalada (PB04/PB06)</td><td>3,892 kWp / <strong>4,050 kWp</strong></td><td>3,892 kWp / <strong>4,050 kWp</strong></td></tr>
+              <tr><td>Modulos Fotovoltaicos (PB05/PB06)</td><td>10x [FV006] Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td><td>10x [FV006] Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</td></tr>
+              <tr><td>Inversor Selecionado e R_DC/AC (PB07)</td><td>[INV001] Growatt MIC 3000TL-X (on-grid, 3000 W, efic. 97,6%, R_DC/AC = 1,35)</td><td>[INV006] Deye SUN-5K-SG04LP1-EU-SM2 (hibrido, 5000 W, efic. 97,6%, R_DC/AC = 0,81)</td></tr>
+              <tr><td>Geracao Estimada: Dia / Mes (PB08)</td><td>15,79 kWh/dia | <strong>473,9 kWh/mes</strong></td><td>15,79 kWh/dia | <strong>473,9 kWh/mes</strong></td></tr>
+              <tr><td>Atendimento / Energia Compensada (PB09)</td><td><strong>104,1%</strong> (455,31 kWh/mes compensados + 18,54 kWh/mes excedente)</td><td><strong>104,1%</strong> (455,31 kWh/mes compensados + 18,54 kWh/mes excedente)</td></tr>
+              <tr><td>Armazenamento em Baterias (PB10/PB11/PB12)</td><td>Sem armazenamento (0 kWh, R$ 0,00)</td><td><strong>2x [BAT005] Deye SE-F5</strong> (10,24 kWh nominais / 9,22 kWh uteis, DoD 90%)</td></tr>
+              <tr><td>Autonomia de Backup (PB11)</td><td>0 h (desliga em queda de rede por anti-ilhamento)</td><td><strong>12,0 horas</strong> (E_aut = 7,59 kWh | C_bat = 8,88 kWh)</td></tr>
+              <tr><td>Custo dos Equipamentos - Soma Datasets (PB13)</td><td><strong>R$ 7.492,20</strong></td><td><strong>R$ 26.062,20</strong> (+R$ 18.570,00)</td></tr>
+              <tr><td>Outros Custos (Estrutura, Cabos, Instalacao, Projeto)</td><td>R$ 4.098,68</td><td>R$ 7.255,58</td></tr>
+              <tr><td>Investimento Total Estimado (Turn-Key)</td><td><strong>R$ 11.590,88</strong></td><td><strong>R$ 33.317,78</strong> (+R$ 21.726,90 / +187,4%)</td></tr>
+              <tr><td>Economia Mensal / Anual na Conta (PB15)</td><td><strong>R$ 418,89/mes</strong> | <strong>R$ 5.026,68/ano</strong></td><td><strong>R$ 418,89/mes</strong> | <strong>R$ 5.026,68/ano</strong></td></tr>
+              <tr><td>Payback Simples (Considerando So Equipamentos)</td><td>1,49 anos</td><td>5,18 anos</td></tr>
+              <tr><td>Payback Simples (Investimento Total / Economia Anual) (PB16)</td><td><span class="badge-ok">2.31 anos (~2 anos e 4 meses)</span></td><td><span class="badge-warn">6.63 anos (~6 anos e 8 meses)</span></td></tr>
             </tbody>
           </table>
-          <div class="callout">
-            <h3>Questao Final da Sprint Review (Secao 9) - Analise Tecnica e Economica</h3>
-            <p style="white-space: pre-line;">Para a residencia analisada (consumo de 455.31 kWh/mes ou 15.18 kWh/dia em São Paulo/SP, HSP = 5.00 kWh/m2/dia, PR = 78%), o sistema SEM ARMAZENAMENTO (On-Grid) e a solucao que faz mais sentido sob a otica tecnico-economica para um consumidor residencial conectado a rede urbana confiavel.
+          <div class="callout" style="border-left-color:#059669; background:#ecfdf5;">
+            <h3 style="color:#065f46;">Resposta da Questao Final da Sprint Review (Secao 9 do PDF)</h3>
+            <p style="margin:6px 0;"><strong>Pergunta do Professor:</strong> <em>"Para a residencia utilizada na demonstracao, qual solucao faz mais sentido: sistema fotovoltaico sem armazenamento ou sistema com baterias? Quais resultados tecnicos e economicos do projeto sustentam a analise?"</em></p>
+            <p style="white-space: pre-line; margin-top:10px;">Para a residencia analisada (consumo de 455.31 kWh/mes ou 15.18 kWh/dia em São Paulo/SP, HSP = 5.00 kWh/m2/dia, PR = 78%), o sistema SEM ARMAZENAMENTO (On-Grid) e a solucao que faz mais sentido sob a otica tecnico-economica para um consumidor residencial conectado a rede urbana confiavel.
   1) Desempenho Tecnico e Geracao: Ambos os cenarios instalam 4.050 kWp (10 modulos Trina Solar TSM-405DE09 (Vertex S) de 405 Wp) e geram 473.85 kWh/mes (15.79 kWh/dia), atendendo 104.1% do consumo mensal com 455.31 kWh/mes efetivamente compensados.
   2) Impacto dos Equipamentos e Armazenamento: A opcao COM BATERIAS exige substituir o inversor on-grid (Growatt MIC 3000TL-X, R$ 1589.00) por um inversor hibrido (Deye SUN-5K-SG04LP1-EU-SM2, R$ 7859.00) e adicionar 2 bateria(s) Deye SE-F5 (10.24 kWh nominais / 9.22 kWh uteis, custo de R$ 12300.00) para garantir 12 h de autonomia (7.59 kWh).
   3) Viabilidade Economica e Payback Simples: Como na modalidade de compensacao de creditos (GD) a economia na conta de luz e identica nos dois cenarios (R$ 418.89/mes ou R$ 5026.68/ano a tarifa de R$ 0.92/kWh), o investimento total salta de R$ 11590.88 (Sem Baterias) para R$ 33317.78 (Com Baterias), um acrescimo de R$ 21726.90 (+187.4%). Isso eleva o Payback Simples de 2.31 anos para 6.63 anos (+4.32 anos). Portanto, o sistema com baterias so se justifica caso a residencia sofra interrupcoes frequentes da concessionaria ou possua cargas criticas que exijam nobreak solar de 12 h.</p>
@@ -185,9 +316,237 @@
         </section>
         
 
+    
+        <section class="card" id="secao-roteiro">
+          <h2>4. Roteiro Guiado das 15 Etapas da Sprint Review (Secao 7 do PDF)</h2>
+          <p style="color:var(--muted); margin-top:0;">Use este quadro durante a apresentacao ao vivo na aula de 23/10 para demonstrar cada um dos 15 itens exigidos pelo Prof. Alvaro:</p>
+          <div class="steps-grid">
+            <div class="step-box"><span class="step-num">Etapa 1</span><strong>Selecao da Residencia (PB01)</strong><p>Imovel #1 recuperado do banco JSON: <strong>Residencia Familia Silva (SP)</strong> (Av. Paulista, 1106 - São Paulo/SP), sem exigir novo cadastro.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 2</span><strong>Equipamentos e Consumo (PB02)</strong><p>8 tipos de equipamentos (16 unidades), potencia instalada de <strong>9.013 W (9,013 kW)</strong>, consumo <strong>E_mes = 455,31 kWh/mes</strong> e <strong>E_dia = 15,18 kWh/dia</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 3</span><strong>Dimensionamento FV (PB04)</strong><p>Formula: <code>P_FV = E_dia / (HSP x PR) = 15,177 / (5,00 x 0,78)</code> = <strong>3,892 kWp</strong> necessarios para 100% da demanda.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 4</span><strong>HSP e PR Utilizados (PB03)</strong><p><strong>HSP = 5,00 kWh/m2/dia</strong> (CRESESB/SunData (via tabela publicada)) e <strong>PR = 78% (0,78)</strong> justificado pela NT EPE DEA-SEE 009/2023 (perdas termicas, cabos e inversor).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 5</span><strong>Consulta aos Datasets (PB05/PB07/PB12)</strong><p>Leitura dinamica dos arquivos CSV separados: <strong>10 modulos</strong> (<code>modulos.csv</code>), <strong>8 inversores</strong> (<code>inversores.csv</code>) e <strong>6 baterias LiFePO4</strong> (<code>baterias.csv</code>).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 6</span><strong>Selecao dos Modulos (PB06)</strong><p>Escolhido <strong>[FV006] Trina Solar TSM-405DE09 (Vertex S) (405 Wp)</strong>. <code>N_mod = teto(3891,5 / 550) = 10 modulos</code> -> <strong>P_inst = 4,05 kWp</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 7</span><strong>Compatibilidade do Inversor (PB07)</strong><p>Verificadas regras C1 a C8 (Voc frio 453,2V, Vmp 342,0V no MPPT, corrente e <code>R_DC/AC = 1,35</code>). On-Grid: <strong>[INV001] Growatt</strong>; Hibrido: <strong>[INV006] Deye</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 8</span><strong>Geracao Estimada (PB08)</strong><p><code>E_gerada,dia = 4,05 x 5,00 x 0,78</code> = <strong>15,79 kWh/dia</strong> e <code>E_gerada,mes = E_dia x 30</code> = <strong>473,85 kWh/mes</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 9</span><strong>Comparacao Geracao x Consumo (PB09)</strong><p>Atendimento de <strong>104,07%</strong>. Distingue energia compensada (<strong>455,31 kWh/mes</strong>) do excedente injetado (<strong>18,54 kWh/mes</strong>).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 10</span><strong>Opcao Sem Baterias (PB10)</strong><p>Sistema On-Grid convencional: 7x Canadian 550W + 1x Growatt MIN 6000TL-X (6000W), sem banco de baterias (0 kWh).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 11</span><strong>Opcao Com Baterias e Autonomia (PB11)</strong><p>Para <strong>12h de autonomia</strong> (<code>E_aut = 7,59 kWh</code>, <code>C_bat = 9,98 kWh</code>): selecionadas <strong>2x [BAT005] Deye SE-F5</strong> (9,60 kWh nominais / 7,68 kWh uteis, 48V LiFePO4).</p></div>
+            <div class="step-box"><span class="step-num">Etapa 12</span><strong>Orcamento Automatico (PB13)</strong><p>On-Grid: Equipamentos <strong>R$ 7.492,20</strong> | Total <strong>R$ 11.590,88</strong>.<br>Hibrido: Equipamentos <strong>R$ 26.062,20</strong> | Total <strong>R$ 33.317,78</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 13</span><strong>Comparacao dos Cenarios (PB14)</strong><p>Tabela comparativa lado a lado demonstrando acrescimo de <strong>+R$ 21.726,90 (+187,4%)</strong> para incluir backup de 12h.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 14</span><strong>Economia e Payback Simples (PB15/PB16)</strong><p>Tarifa R$ 0,92/kWh -> Economia de <strong>R$ 418,89/mes (R$ 5.026,68/ano)</strong>. Payback Simples: <strong>2,31 anos (On-Grid)</strong> vs <strong>6,63 anos (Hibrido)</strong>.</p></div>
+            <div class="step-box"><span class="step-num">Etapa 15</span><strong>Proposta Final ao Cliente (PB17/PB21)</strong><p>Proposta consolidada exibida no terminal, salva em <code>dados_sistema.json</code> (PB20) e exportada em <code>proposta_cliente.txt</code> e <code>proposta_cliente.html</code>.</p></div>
+          </div>
+        </section>
+        
+
+    <section class="card" id="secao-datasets">
+      <h2>5. Equipamentos Cadastrados na Residencia (PB01/PB02) e Datasets Estruturados (PB05/PB07/PB12)</h2>
+      <h3 style="font-size:15px; color:#0f172a; margin-top:12px;">5.1 Cargas Eletricas Cadastradas em "Residencia Familia Silva (SP)" (dados_sistema.json)</h3>
+      <table>
+        <thead>
+          <tr><th>Equipamento</th><th>Categoria</th><th style="text-align:right">Potencia Unit.</th><th style="text-align:center">Qtd</th><th style="text-align:right">Uso Diario</th><th style="text-align:right">Consumo Mensal</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Ar-condicionado</strong></td><td>Quarto</td><td style='text-align:right'>1.200 W</td><td style='text-align:center'>1</td><td style='text-align:right'>4,00 h/dia</td><td style='text-align:right'><strong>144,00 kWh/mes</strong></td></tr>
+<tr><td><strong>Chuveiro eletrico</strong></td><td>Banheiro</td><td style='text-align:right'>5.500 W</td><td style='text-align:center'>1</td><td style='text-align:right'>0,75 h/dia</td><td style='text-align:right'><strong>123,75 kWh/mes</strong></td></tr>
+<tr><td><strong>Geladeira</strong></td><td>Cozinha</td><td style='text-align:right'>133 W</td><td style='text-align:center'>1</td><td style='text-align:right'>24,00 h/dia</td><td style='text-align:right'><strong>95,76 kWh/mes</strong></td></tr>
+<tr><td><strong>Computador desktop</strong></td><td>Escritorio</td><td style='text-align:right'>200 W</td><td style='text-align:center'>1</td><td style='text-align:right'>5,00 h/dia</td><td style='text-align:right'><strong>30,00 kWh/mes</strong></td></tr>
+<tr><td><strong>Televisao</strong></td><td>Sala</td><td style='text-align:right'>100 W</td><td style='text-align:center'>2</td><td style='text-align:right'>4,00 h/dia</td><td style='text-align:right'><strong>24,00 kWh/mes</strong></td></tr>
+<tr><td><strong>Maquina de lavar roupa</strong></td><td>Lavanderia</td><td style='text-align:right'>500 W</td><td style='text-align:center'>1</td><td style='text-align:right'>1,00 h/dia</td><td style='text-align:right'><strong>15,00 kWh/mes</strong></td></tr>
+<tr><td><strong>Lampada LED</strong></td><td>Geral</td><td style='text-align:right'>10 W</td><td style='text-align:center'>8</td><td style='text-align:right'>5,00 h/dia</td><td style='text-align:right'><strong>12,00 kWh/mes</strong></td></tr>
+<tr><td><strong>Micro-ondas</strong></td><td>Cozinha</td><td style='text-align:right'>1.200 W</td><td style='text-align:center'>1</td><td style='text-align:right'>0,30 h/dia</td><td style='text-align:right'><strong>10,80 kWh/mes</strong></td></tr>
+
+          <tr style="background:#f1f5f9"><td colspan="2"><strong>TOTAL DA RESIDENCIA (PB02)</strong></td><td style="text-align:right"><strong>9.013 W (9,013 kW)</strong></td><td style="text-align:center"><strong>16</strong></td><td style="text-align:right"><strong>E_dia = 15,18 kWh/dia</strong></td><td style="text-align:right"><strong>E_mes = 455,31 kWh/mes</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.2 Dataset de Modulos Fotovoltaicos (modulos.csv - PB05)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th style="text-align:right">Potencia</th><th style="text-align:right">Voc / Vmp</th><th style="text-align:right">Isc / Imp</th><th style="text-align:right">Eficiencia</th><th style="text-align:right">Preco Unit.</th><th>Fonte / Data</th></tr>
+        </thead>
+        <tbody><tr><td><strong>FV001</strong></td><td>Canadian Solar</td><td>CS6W-545MS</td><td style='text-align:right'>545 Wp</td><td style='text-align:right'>49,20 V / 41,50 V</td><td style='text-align:right'>13,95 A / 13,14 A</td><td style='text-align:right'>21,30%</td><td style='text-align:right'><strong>R$ 1.726,48</strong></td><td><small>Loja Elétrica (2026-10-01)</small></td></tr>
+<tr><td><strong>FV002</strong></td><td>Canadian Solar</td><td>CS6.2-66TB-610 (TOPHiKu6 bifacial)</td><td style='text-align:right'>610 Wp</td><td style='text-align:right'>48,40 V / 40,50 V</td><td style='text-align:right'>16,00 A / 15,07 A</td><td style='text-align:right'>22,60%</td><td style='text-align:right'><strong>R$ 759,00</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>FV003</strong></td><td>OSDA</td><td>ODA610-33V-MHDRZ (bifacial)</td><td style='text-align:right'>610 Wp</td><td style='text-align:right'>48,50 V / 40,46 V</td><td style='text-align:right'>15,95 A / 15,08 A</td><td style='text-align:right'>22,60%</td><td style='text-align:right'><strong>R$ 705,00</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>FV004</strong></td><td>Honor</td><td>HY-M12/132H-700</td><td style='text-align:right'>700 Wp</td><td style='text-align:right'>47,60 V / 40,00 V</td><td style='text-align:right'>18,60 A / 17,50 A</td><td style='text-align:right'>21,28%</td><td style='text-align:right'><strong>R$ 949,00</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>FV005</strong></td><td>Risen Energy</td><td>RSM40-8-405M</td><td style='text-align:right'>405 Wp</td><td style='text-align:right'>37,31 V / 31,05 V</td><td style='text-align:right'>13,87 A / 13,05 A</td><td style='text-align:right'>21,10%</td><td style='text-align:right'><strong>R$ 599,00</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>FV006</strong></td><td>Trina Solar</td><td>TSM-405DE09 (Vertex S)</td><td style='text-align:right'>405 Wp</td><td style='text-align:right'>41,20 V / 34,20 V</td><td style='text-align:right'>12,57 A / 11,85 A</td><td style='text-align:right'>21,10%</td><td style='text-align:right'><strong>R$ 590,32</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>FV007</strong></td><td>OSDA</td><td>ODA550-36V-MH</td><td style='text-align:right'>550 Wp</td><td style='text-align:right'>49,90 V / 41,80 V</td><td style='text-align:right'>14,02 A / 13,16 A</td><td style='text-align:right'>21,30%</td><td style='text-align:right'><strong>R$ 869,00</strong></td><td><small>Mercado Livre (2026-10-01)</small></td></tr>
+<tr><td><strong>FV008</strong></td><td>Jinko Solar</td><td>JKM555M-72HL4-V (Tiger Pro)</td><td style='text-align:right'>555 Wp</td><td style='text-align:right'>50,27 V / 41,84 V</td><td style='text-align:right'>14,01 A / 13,27 A</td><td style='text-align:right'>21,48%</td><td style='text-align:right'><strong>R$ 999,85</strong></td><td><small>Mercado Livre (2026-10-01)</small></td></tr>
+<tr><td><strong>FV009</strong></td><td>Jinko Solar</td><td>JKM620N-66HL4M-BDV (Tiger Neo)</td><td style='text-align:right'>620 Wp</td><td style='text-align:right'>48,84 V / 40,87 V</td><td style='text-align:right'>16,09 A / 15,17 A</td><td style='text-align:right'>22,95%</td><td style='text-align:right'><strong>R$ 1.299,00</strong></td><td><small>Mercado Livre (2026-10-01)</small></td></tr>
+<tr><td><strong>FV010</strong></td><td>Canadian Solar</td><td>CS6W-550MS (HiKu6)</td><td style='text-align:right'>550 Wp</td><td style='text-align:right'>49,60 V / 41,70 V</td><td style='text-align:right'>14,00 A / 13,20 A</td><td style='text-align:right'>21,50%</td><td style='text-align:right'><strong>R$ 589,00</strong></td><td><small>Minha Casa Solar (2026-10-01)</small></td></tr>
+</tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.3 Dataset de Inversores (inversores.csv - PB07)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th>Tipo</th><th style="text-align:right">Pot. Nom / Max FV</th><th style="text-align:right">Faixa MPPT</th><th style="text-align:right">Eficiencia</th><th style="text-align:center">Bateria</th><th style="text-align:right">Preco Unit.</th></tr>
+        </thead>
+        <tbody><tr><td><strong>INV001</strong></td><td>Growatt</td><td>MIC 3000TL-X</td><td>on-grid</td><td style='text-align:right'>3000 W / 4200 W</td><td style='text-align:right'>50-500 V (1 MPPT)</td><td style='text-align:right'>97,6%</td><td style='text-align:center'>NAO</td><td style='text-align:right'><strong>R$ 1.589,00</strong></td></tr>
+<tr><td><strong>INV002</strong></td><td>Growatt</td><td>MIN 5000TL-X</td><td>on-grid</td><td style='text-align:right'>5000 W / 7500 W</td><td style='text-align:right'>80-550 V (2 MPPT)</td><td style='text-align:right'>98,4%</td><td style='text-align:center'>NAO</td><td style='text-align:right'><strong>R$ 4.503,00</strong></td></tr>
+<tr><td><strong>INV003</strong></td><td>Growatt</td><td>MIN 6000TL-X</td><td>on-grid</td><td style='text-align:right'>6000 W / 9000 W</td><td style='text-align:right'>80-550 V (2 MPPT)</td><td style='text-align:right'>98,4%</td><td style='text-align:center'>NAO</td><td style='text-align:right'><strong>R$ 3.800,00</strong></td></tr>
+<tr><td><strong>INV004</strong></td><td>Growatt</td><td>MIN 8000TL-X2</td><td>on-grid</td><td style='text-align:right'>8000 W / 12000 W</td><td style='text-align:right'>80-550 V (3 MPPT)</td><td style='text-align:right'>98,1%</td><td style='text-align:center'>NAO</td><td style='text-align:right'><strong>R$ 5.879,00</strong></td></tr>
+<tr><td><strong>INV005</strong></td><td>Growatt</td><td>MIN 10000TL-X2</td><td>on-grid</td><td style='text-align:right'>10000 W / 15000 W</td><td style='text-align:right'>80-550 V (3 MPPT)</td><td style='text-align:right'>98,1%</td><td style='text-align:center'>NAO</td><td style='text-align:right'><strong>R$ 6.989,00</strong></td></tr>
+<tr><td><strong>INV006</strong></td><td>Deye</td><td>SUN-5K-SG04LP1-EU-SM2</td><td>hibrido</td><td style='text-align:right'>5000 W / 6500 W</td><td style='text-align:right'>125-425 V (2 MPPT)</td><td style='text-align:right'>97,6%</td><td style='text-align:center'>SIM</td><td style='text-align:right'><strong>R$ 7.859,00</strong></td></tr>
+<tr><td><strong>INV007</strong></td><td>Deye</td><td>SUN-5K-SG03LP1-EU</td><td>hibrido</td><td style='text-align:right'>5000 W / 6500 W</td><td style='text-align:right'>150-425 V (2 MPPT)</td><td style='text-align:right'>97,6%</td><td style='text-align:center'>SIM</td><td style='text-align:right'><strong>R$ 10.150,00</strong></td></tr>
+<tr><td><strong>INV008</strong></td><td>Deye</td><td>SUN-5K-SG01LP1-US (127/220 V)</td><td>hibrido</td><td style='text-align:right'>5000 W / 6500 W</td><td style='text-align:right'>125-425 V (2 MPPT)</td><td style='text-align:right'>97,6%</td><td style='text-align:center'>SIM</td><td style='text-align:right'><strong>R$ 12.796,13</strong></td></tr>
+</tbody>
+      </table>
+
+      <h3 style="font-size:15px; color:#0f172a; margin-top:24px;">5.4 Dataset de Baterias LiFePO4 (baterias.csv - PB12)</h3>
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Fabricante</th><th>Modelo</th><th>Tecnologia</th><th style="text-align:right">Tensao</th><th style="text-align:right">Capacidade</th><th style="text-align:right">DoD / Ciclos</th><th style="text-align:right">Preco Unit.</th><th>Fonte / Data</th></tr>
+        </thead>
+        <tbody><tr><td><strong>BAT001</strong></td><td>Dyness</td><td>DL5.0C</td><td>LiFePO4</td><td style='text-align:right'>51,2 V</td><td style='text-align:right'>100 Ah / 5,12 kWh</td><td style='text-align:right'>90% (6000 ciclos)</td><td style='text-align:right'><strong>R$ 8.222,53</strong></td><td><small>Meu Gerador (2026-10-01)</small></td></tr>
+<tr><td><strong>BAT002</strong></td><td>Dyness</td><td>PowerDepot H5</td><td>LiFePO4</td><td style='text-align:right'>48,0 V</td><td style='text-align:right'>100 Ah / 4,80 kWh</td><td style='text-align:right'>90% (6000 ciclos)</td><td style='text-align:right'><strong>R$ 14.609,95</strong></td><td><small>Meu Gerador (2026-10-01)</small></td></tr>
+<tr><td><strong>BAT003</strong></td><td>Unipower</td><td>UPLFP48-100 3U</td><td>LiFePO4</td><td style='text-align:right'>48,0 V</td><td style='text-align:right'>100 Ah / 4,80 kWh</td><td style='text-align:right'>80% (4000 ciclos)</td><td style='text-align:right'><strong>R$ 7.108,00</strong></td><td><small>Mercado Livre (SUN21) (2026-10-01)</small></td></tr>
+<tr><td><strong>BAT004</strong></td><td>Unipower</td><td>UPLFP48V 100Ah IW (in-wall)</td><td>LiFePO4</td><td style='text-align:right'>48,0 V</td><td style='text-align:right'>100 Ah / 4,80 kWh</td><td style='text-align:right'>80% (4000 ciclos)</td><td style='text-align:right'><strong>R$ 4.879,90</strong></td><td><small>Anhanguera Energia Solar (2026-10-01)</small></td></tr>
+<tr><td><strong>BAT005</strong></td><td>Deye</td><td>SE-F5</td><td>LiFePO4</td><td style='text-align:right'>51,2 V</td><td style='text-align:right'>100 Ah / 5,12 kWh</td><td style='text-align:right'>90% (6000 ciclos)</td><td style='text-align:right'><strong>R$ 6.150,00</strong></td><td><small>Ensolar Energia (2026-10-01)</small></td></tr>
+<tr><td><strong>BAT006</strong></td><td>Deye</td><td>SE-G5.1 Pro-B</td><td>LiFePO4</td><td style='text-align:right'>51,2 V</td><td style='text-align:right'>100 Ah / 5,12 kWh</td><td style='text-align:right'>90% (6000 ciclos)</td><td style='text-align:right'><strong>R$ 7.699,45</strong></td><td><small>Anhanguera Energia Solar (2026-10-02)</small></td></tr>
+</tbody>
+      </table>
+    </section>
+
     <footer>
       Sistema de Dimensionamento Energetico Residencial - Equipe Lumos (FIAP 2026) | Pietro Lorande (RM 569125), Luiz Otavio Brito Freixo (RM 569977), Maria Eduarda Lemos (RM 574094)
     </footer>
   </div>
+
+  <script>
+    const DADOS_FV = {"consumo_padrao": 455.31, "potencia_casa_w": 9013.0, "pr_padrao": 0.78, "tarifa_padrao": 0.92, "modulos": [{"id": "FV001", "fabricante": "Canadian Solar", "modelo": "CS6W-545MS", "potencia_wp": 545.0, "voc_v": 49.2, "isc_a": 13.95, "vmp_v": 41.5, "imp_a": 13.14, "eficiencia_pct": 21.3, "preco_brl": 1726.48, "fornecedor": "Loja Elétrica", "data_coleta": "2026-10-01", "url_fonte": "https://www.lojaeletrica.com.br/painel-solar-545w-41-5v-13-1a-144-celulas-monocristalino-canadian.html", "fonte_especificacao": "Página do fornecedor + datasheet Canadian HiKu6", "status_validacao": "OK_PAGINA"}, {"id": "FV002", "fabricante": "Canadian Solar", "modelo": "CS6.2-66TB-610 (TOPHiKu6 bifacial)", "potencia_wp": 610.0, "voc_v": 48.4, "isc_a": 16.0, "vmp_v": 40.5, "imp_a": 15.07, "eficiencia_pct": 22.6, "preco_brl": 759.0, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar-canadian-610w-monocristalino-half-cell-bifacial-cs6-2-66tb-83336", "fonte_especificacao": "Datasheet Canadian TOPHiKu6 CS6.2-66TB", "status_validacao": "OK_VALIDADO"}, {"id": "FV003", "fabricante": "OSDA", "modelo": "ODA610-33V-MHDRZ (bifacial)", "potencia_wp": 610.0, "voc_v": 48.5, "isc_a": 15.95, "vmp_v": 40.46, "imp_a": 15.08, "eficiencia_pct": 22.6, "preco_brl": 705.0, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar", "fonte_especificacao": "Página do fornecedor + datasheet OSDA", "status_validacao": "OK_VALIDADO"}, {"id": "FV004", "fabricante": "Honor", "modelo": "HY-M12/132H-700", "potencia_wp": 700.0, "voc_v": 47.6, "isc_a": 18.6, "vmp_v": 40.0, "imp_a": 17.5, "eficiencia_pct": 21.28, "preco_brl": 949.0, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar", "fonte_especificacao": "Página do fornecedor + datasheet Honor", "status_validacao": "OK_VALIDADO"}, {"id": "FV005", "fabricante": "Risen Energy", "modelo": "RSM40-8-405M", "potencia_wp": 405.0, "voc_v": 37.31, "isc_a": 13.87, "vmp_v": 31.05, "imp_a": 13.05, "eficiencia_pct": 21.1, "preco_brl": 599.0, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar-monocristalino-405w-half-cell-risen-rsm40-8-405m-82150", "fonte_especificacao": "Página do fornecedor + datasheet Risen", "status_validacao": "OK_VALIDADO"}, {"id": "FV006", "fabricante": "Trina Solar", "modelo": "TSM-405DE09 (Vertex S)", "potencia_wp": 405.0, "voc_v": 41.2, "isc_a": 12.57, "vmp_v": 34.2, "imp_a": 11.85, "eficiencia_pct": 21.1, "preco_brl": 590.32, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar-405w-monocristalino-half-cell-trina-solar-tsm-405de09-82174", "fonte_especificacao": "Datasheet Trina Vertex S TSM-DE09", "status_validacao": "OK_VALIDADO"}, {"id": "FV007", "fabricante": "OSDA", "modelo": "ODA550-36V-MH", "potencia_wp": 550.0, "voc_v": 49.9, "isc_a": 14.02, "vmp_v": 41.8, "imp_a": 13.16, "eficiencia_pct": 21.3, "preco_brl": 869.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/painel-solar-risen-550w", "fonte_especificacao": "Datasheet OSDA ODA550-36V-MH", "status_validacao": "OK_VALIDADO"}, {"id": "FV008", "fabricante": "Jinko Solar", "modelo": "JKM555M-72HL4-V (Tiger Pro)", "potencia_wp": 555.0, "voc_v": 50.27, "isc_a": 14.01, "vmp_v": 41.84, "imp_a": 13.27, "eficiencia_pct": 21.48, "preco_brl": 999.85, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/painel-solar-320w-jinko-solar", "fonte_especificacao": "Datasheet Jinko Tiger Pro 72HC", "status_validacao": "OK_VALIDADO"}, {"id": "FV009", "fabricante": "Jinko Solar", "modelo": "JKM620N-66HL4M-BDV (Tiger Neo)", "potencia_wp": 620.0, "voc_v": 48.84, "isc_a": 16.09, "vmp_v": 40.87, "imp_a": 15.17, "eficiencia_pct": 22.95, "preco_brl": 1299.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/painel-solar-320w-jinko-solar", "fonte_especificacao": "Datasheet Jinko Tiger Neo 66HL4M-BDV", "status_validacao": "OK_VALIDADO"}, {"id": "FV010", "fabricante": "Canadian Solar", "modelo": "CS6W-550MS (HiKu6)", "potencia_wp": 550.0, "voc_v": 49.6, "isc_a": 14.0, "vmp_v": 41.7, "imp_a": 13.2, "eficiencia_pct": 21.5, "preco_brl": 589.0, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.minhacasasolar.com.br/painel-solar-550w-monocristalino-half-cell-canadian-cs6w-550ms-82127", "fonte_especificacao": "Datasheet Canadian HiKu6 CS6W-MS", "status_validacao": "OK_VALIDADO"}], "inversores": [{"id": "INV001", "fabricante": "Growatt", "modelo": "MIC 3000TL-X", "tipo": "on-grid", "potencia_nominal_w": 3000.0, "potencia_max_fv_w": 4200.0, "tensao_max_entrada_v": 500.0, "faixa_mppt_min_v": 50.0, "faixa_mppt_max_v": 500.0, "corrente_max_entrada_a": 13.0, "numero_mppt": 1.0, "strings_por_mppt": 1.0, "eficiencia_pct": 97.6, "compativel_bateria": false, "tensao_bateria_min_v": 0.0, "tensao_bateria_max_v": 0.0, "preco_brl": 1589.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-solar-growatt", "fonte_especificacao": "Datasheet Growatt MIC 750-3300TL-X", "status_validacao": "OK_VALIDADO"}, {"id": "INV002", "fabricante": "Growatt", "modelo": "MIN 5000TL-X", "tipo": "on-grid", "potencia_nominal_w": 5000.0, "potencia_max_fv_w": 7500.0, "tensao_max_entrada_v": 550.0, "faixa_mppt_min_v": 80.0, "faixa_mppt_max_v": 550.0, "corrente_max_entrada_a": 12.5, "numero_mppt": 2.0, "strings_por_mppt": 1.0, "eficiencia_pct": 98.4, "compativel_bateria": false, "tensao_bateria_min_v": 0.0, "tensao_bateria_max_v": 0.0, "preco_brl": 4503.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-solar-growatt-on-grid-5kw", "fonte_especificacao": "Datasheet Growatt MIN 2500-6000TL-X", "status_validacao": "OK_VALIDADO"}, {"id": "INV003", "fabricante": "Growatt", "modelo": "MIN 6000TL-X", "tipo": "on-grid", "potencia_nominal_w": 6000.0, "potencia_max_fv_w": 9000.0, "tensao_max_entrada_v": 550.0, "faixa_mppt_min_v": 80.0, "faixa_mppt_max_v": 550.0, "corrente_max_entrada_a": 12.5, "numero_mppt": 2.0, "strings_por_mppt": 1.0, "eficiencia_pct": 98.4, "compativel_bateria": false, "tensao_bateria_min_v": 0.0, "tensao_bateria_max_v": 0.0, "preco_brl": 3800.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-growatt-solar", "fonte_especificacao": "Datasheet Growatt MIN 2500-6000TL-X", "status_validacao": "OK_VALIDADO"}, {"id": "INV004", "fabricante": "Growatt", "modelo": "MIN 8000TL-X2", "tipo": "on-grid", "potencia_nominal_w": 8000.0, "potencia_max_fv_w": 12000.0, "tensao_max_entrada_v": 600.0, "faixa_mppt_min_v": 80.0, "faixa_mppt_max_v": 550.0, "corrente_max_entrada_a": 16.0, "numero_mppt": 3.0, "strings_por_mppt": 1.0, "eficiencia_pct": 98.1, "compativel_bateria": false, "tensao_bateria_min_v": 0.0, "tensao_bateria_max_v": 0.0, "preco_brl": 5879.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-growatt-solar", "fonte_especificacao": "Datasheet Growatt MIN 7000-10000TL-X2", "status_validacao": "OK_VALIDADO"}, {"id": "INV005", "fabricante": "Growatt", "modelo": "MIN 10000TL-X2", "tipo": "on-grid", "potencia_nominal_w": 10000.0, "potencia_max_fv_w": 15000.0, "tensao_max_entrada_v": 600.0, "faixa_mppt_min_v": 80.0, "faixa_mppt_max_v": 550.0, "corrente_max_entrada_a": 16.0, "numero_mppt": 3.0, "strings_por_mppt": 1.0, "eficiencia_pct": 98.1, "compativel_bateria": false, "tensao_bateria_min_v": 0.0, "tensao_bateria_max_v": 0.0, "preco_brl": 6989.0, "fornecedor": "Mercado Livre", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-growatt", "fonte_especificacao": "Datasheet Growatt MIN 7000-10000TL-X2", "status_validacao": "OK_VALIDADO"}, {"id": "INV006", "fabricante": "Deye", "modelo": "SUN-5K-SG04LP1-EU-SM2", "tipo": "hibrido", "potencia_nominal_w": 5000.0, "potencia_max_fv_w": 6500.0, "tensao_max_entrada_v": 500.0, "faixa_mppt_min_v": 125.0, "faixa_mppt_max_v": 425.0, "corrente_max_entrada_a": 13.0, "numero_mppt": 2.0, "strings_por_mppt": 1.0, "eficiencia_pct": 97.6, "compativel_bateria": true, "tensao_bateria_min_v": 40.0, "tensao_bateria_max_v": 60.0, "preco_brl": 7859.0, "fornecedor": "Mercado Livre (Ensolar)", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-hibrido-solar-5000w", "fonte_especificacao": "Datasheet Deye SUN-(3.6-6)K-SG04LP1-EU", "status_validacao": "OK_VALIDADO"}, {"id": "INV007", "fabricante": "Deye", "modelo": "SUN-5K-SG03LP1-EU", "tipo": "hibrido", "potencia_nominal_w": 5000.0, "potencia_max_fv_w": 6500.0, "tensao_max_entrada_v": 500.0, "faixa_mppt_min_v": 150.0, "faixa_mppt_max_v": 425.0, "corrente_max_entrada_a": 13.0, "numero_mppt": 2.0, "strings_por_mppt": 1.0, "eficiencia_pct": 97.6, "compativel_bateria": true, "tensao_bateria_min_v": 40.0, "tensao_bateria_max_v": 60.0, "preco_brl": 10150.0, "fornecedor": "Mercado Livre (Ensolar)", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/inversor-hibrido-deye", "fonte_especificacao": "Datasheet Deye SUN-(3.6-6)K-SG03LP1-EU", "status_validacao": "OK_VALIDADO"}, {"id": "INV008", "fabricante": "Deye", "modelo": "SUN-5K-SG01LP1-US (127/220 V)", "tipo": "hibrido", "potencia_nominal_w": 5000.0, "potencia_max_fv_w": 6500.0, "tensao_max_entrada_v": 500.0, "faixa_mppt_min_v": 125.0, "faixa_mppt_max_v": 425.0, "corrente_max_entrada_a": 13.0, "numero_mppt": 2.0, "strings_por_mppt": 1.0, "eficiencia_pct": 97.6, "compativel_bateria": true, "tensao_bateria_min_v": 40.0, "tensao_bateria_max_v": 60.0, "preco_brl": 12796.13, "fornecedor": "Minha Casa Solar", "data_coleta": "2026-10-01", "url_fonte": "https://minhacasasolar.com.br/produto/inversor-hibrido-5kw-127-220v-bifasico-2mppt-deye-sun-5k-sg01lp1-us-82264", "fonte_especificacao": "Datasheet Deye SUN-(5-8)K-SG01LP1-US", "status_validacao": "OK_VALIDADO"}], "baterias": [{"id": "BAT001", "fabricante": "Dyness", "modelo": "DL5.0C", "tecnologia": "LiFePO4", "tensao_nominal_v": 51.2, "capacidade_ah": 100.0, "capacidade_kwh": 5.12, "dod_pct": 90.0, "ciclos": 6000.0, "preco_brl": 8222.53, "fornecedor": "Meu Gerador", "data_coleta": "2026-10-01", "url_fonte": "https://www.meugerador.com.br/products/bateria-solar-de-litio-dyness-5-12kwh-51-2v-lifepo4-dlc5-0c", "fonte_especificacao": "Página do fornecedor + datasheet Dyness", "status_validacao": "OK_VALIDADO"}, {"id": "BAT002", "fabricante": "Dyness", "modelo": "PowerDepot H5", "tecnologia": "LiFePO4", "tensao_nominal_v": 48.0, "capacidade_ah": 100.0, "capacidade_kwh": 4.8, "dod_pct": 90.0, "ciclos": 6000.0, "preco_brl": 14609.95, "fornecedor": "Meu Gerador", "data_coleta": "2026-10-01", "url_fonte": "https://meugerador.com.br/bateria-solar-de-litio-dyness-powerdepot-h5-48kwh-48v-lifepo4-p7959", "fonte_especificacao": "Página do fornecedor + datasheet Dyness", "status_validacao": "OK_VALIDADO"}, {"id": "BAT003", "fabricante": "Unipower", "modelo": "UPLFP48-100 3U", "tecnologia": "LiFePO4", "tensao_nominal_v": 48.0, "capacidade_ah": 100.0, "capacidade_kwh": 4.8, "dod_pct": 80.0, "ciclos": 4000.0, "preco_brl": 7108.0, "fornecedor": "Mercado Livre (SUN21)", "data_coleta": "2026-10-01", "url_fonte": "https://lista.mercadolivre.com.br/bateria-solar-litio-48v", "fonte_especificacao": "Datasheet Unipower UPLFP48-100 3U", "status_validacao": "OK_VALIDADO"}, {"id": "BAT004", "fabricante": "Unipower", "modelo": "UPLFP48V 100Ah IW (in-wall)", "tecnologia": "LiFePO4", "tensao_nominal_v": 48.0, "capacidade_ah": 100.0, "capacidade_kwh": 4.8, "dod_pct": 80.0, "ciclos": 4000.0, "preco_brl": 4879.9, "fornecedor": "Anhanguera Energia Solar", "data_coleta": "2026-10-01", "url_fonte": "https://www.anhangueraenergiasolar.com.br/bateria-solar-de-litio-100ah-5kw-48v-com-display-unipower-uplfp48inwall/prod-10749443/", "fonte_especificacao": "Datasheet Unipower UPLFP48V 100Ah IW", "status_validacao": "OK_VALIDADO"}, {"id": "BAT005", "fabricante": "Deye", "modelo": "SE-F5", "tecnologia": "LiFePO4", "tensao_nominal_v": 51.2, "capacidade_ah": 100.0, "capacidade_kwh": 5.12, "dod_pct": 90.0, "ciclos": 6000.0, "preco_brl": 6150.0, "fornecedor": "Ensolar Energia", "data_coleta": "2026-10-01", "url_fonte": "https://ensolarenergia.com/products/bateria-deye-litio-lifepo4-48v-100ah-5000kwh", "fonte_especificacao": "Datasheet Deye SE-F5", "status_validacao": "OK_VALIDADO"}, {"id": "BAT006", "fabricante": "Deye", "modelo": "SE-G5.1 Pro-B", "tecnologia": "LiFePO4", "tensao_nominal_v": 51.2, "capacidade_ah": 100.0, "capacidade_kwh": 5.12, "dod_pct": 90.0, "ciclos": 6000.0, "preco_brl": 7699.45, "fornecedor": "Anhanguera Energia Solar", "data_coleta": "2026-10-02", "url_fonte": "https://www.anhangueraenergiasolar.com.br/bateria-litio-deye-lv-512kwh-se-g51pro-b-48v/prod-10754758/", "fonte_especificacao": "Página do fornecedor + datasheet Deye SE-G5.1 Pro-B", "status_validacao": "OK_PAGINA"}], "hsp_lista": [{"cidade": "São Paulo", "uf": "SP", "hsp": 5.0, "fonte": "CRESESB/SunData (via tabela publicada)", "url_fonte": "https://energiasolarexplicada.com.br/blog/quantas-placas-solares-preciso/"}, {"cidade": "Porto Alegre", "uf": "RS", "hsp": 4.6, "fonte": "CRESESB/SunData (via tabela publicada)", "url_fonte": "https://energiasolarexplicada.com.br/blog/quantas-placas-solares-preciso/"}, {"cidade": "Natal", "uf": "RN", "hsp": 6.0, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Fortaleza", "uf": "CE", "hsp": 5.9, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Salvador", "uf": "BA", "hsp": 5.8, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Maceió", "uf": "AL", "hsp": 5.8, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Recife", "uf": "PE", "hsp": 5.8, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Teresina", "uf": "PI", "hsp": 5.8, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Aracaju", "uf": "SE", "hsp": 5.7, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Brasília", "uf": "DF", "hsp": 5.6, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Goiânia", "uf": "GO", "hsp": 5.6, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Cuiabá", "uf": "MT", "hsp": 5.5, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Palmas", "uf": "TO", "hsp": 5.5, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://energiasolarexplicada.com.br/blog/quanto-gera-uma-placa-solar-por-dia/"}, {"cidade": "Rio de Janeiro", "uf": "RJ", "hsp": 5.2, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://cresesb.cepel.br/index.php?section=sundata"}, {"cidade": "Belo Horizonte", "uf": "MG", "hsp": 5.5, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://cresesb.cepel.br/index.php?section=sundata"}, {"cidade": "Curitiba", "uf": "PR", "hsp": 4.5, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://cresesb.cepel.br/index.php?section=sundata"}, {"cidade": "Campinas", "uf": "SP", "hsp": 5.3, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://cresesb.cepel.br/index.php?section=sundata"}, {"cidade": "Florianópolis", "uf": "SC", "hsp": 4.4, "fonte": "CRESESB/INPE SunData - Atlas Brasileiro de Energia Solar 2017", "url_fonte": "https://cresesb.cepel.br/index.php?section=sundata"}]};
+
+    function fmtBRL(v) {
+      return 'R$ ' + Number(v).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    function fmtNum(v, c = 2) {
+      return Number(v).toLocaleString('pt-BR', { minimumFractionDigits: c, maximumFractionDigits: c });
+    }
+
+    function inicializarSimulador() {
+      const selHsp = document.getElementById('sim-hsp');
+      DADOS_FV.hsp_lista.forEach((item, idx) => {
+        const opt = document.createElement('option');
+        opt.value = idx;
+        opt.textContent = `${item.cidade}/${item.uf} (HSP ${fmtNum(item.hsp, 1)} kWh/m2/dia)`;
+        if (item.cidade.toLowerCase().includes('paulo') && item.uf === 'SP') opt.selected = true;
+        selHsp.appendChild(opt);
+      });
+
+      const selMod = document.getElementById('sim-mod');
+      DADOS_FV.modulos.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = `[${m.id}] ${m.fabricante} ${m.modelo} (${m.potencia_wp} Wp - ${fmtBRL(m.preco_brl)})`;
+        selMod.appendChild(opt);
+      });
+      recalcularSimulador();
+    }
+
+    function verificarPar(nMin, mod, inv, comBat) {
+      if (comBat && !inv.compativel_bateria) return null;
+      const serieMax = Math.min(
+        Math.floor(inv.tensao_max_entrada_v / (mod.voc_v * 1.10)),
+        Math.floor(inv.faixa_mppt_max_v / mod.vmp_v)
+      );
+      const serieMin = Math.ceil(inv.faixa_mppt_min_v / (mod.vmp_v * 0.90));
+      const parMax = Math.min(inv.strings_por_mppt, Math.floor(inv.corrente_max_entrada_a / mod.imp_a));
+      if (parMax < 1 || serieMax < 1 || serieMin > serieMax) return null;
+      const nStrings = Math.ceil(nMin / serieMax);
+      if (nStrings > inv.numero_mppt * parMax) return null;
+      const porString = Math.max(Math.ceil(nMin / nStrings), serieMin);
+      const nFinal = nStrings * porString;
+      const pInst = (nFinal * mod.potencia_wp) / 1000.0;
+      const ratio = (pInst * 1000.0) / inv.potencia_nominal_w;
+      const ratioMin = inv.compativel_bateria ? 0.30 : 0.60;
+      if (pInst * 1000.0 > inv.potencia_max_fv_w) return null;
+      if (ratio < ratioMin || ratio > 1.35) return null;
+      return { n_modulos: nFinal, n_strings: nStrings, por_string: porString, p_inst: pInst, ratio: ratio };
+    }
+
+    function recalcularSimulador() {
+      const hspObj = DADOS_FV.hsp_lista[Number(document.getElementById('sim-hsp').value)] || DADOS_FV.hsp_lista[0];
+      const consumoMes = Math.max(1, Number(document.getElementById('sim-consumo').value) || 455.31);
+      const pct = Math.min(100, Math.max(1, Number(document.getElementById('sim-pct').value) || 100));
+      const pr = Math.min(0.99, Math.max(0.10, (Number(document.getElementById('sim-pr').value) || 78) / 100.0));
+      const modId = document.getElementById('sim-mod').value;
+      const comBat = document.getElementById('sim-bat-ativo').value === '1';
+      const autonomiaH = Math.min(72, Math.max(1, Number(document.getElementById('sim-autonomia').value) || 12));
+      const tarifa = Math.max(0.10, Number(document.getElementById('sim-tarifa').value) || 0.92);
+
+      const eDia = consumoMes / 30.0;
+      const eDiaMeta = (consumoMes * (pct / 100.0)) / 30.0;
+      const pFv = eDiaMeta / (hspObj.hsp * pr);
+
+      const modsCand = modId === 'AUTO' ? DADOS_FV.modulos : DADOS_FV.modulos.filter(m => m.id === modId);
+      let melhor = null;
+      modsCand.forEach(mod => {
+        const nMin = Math.ceil((pFv * 1000.0) / mod.potencia_wp - 1e-9);
+        DADOS_FV.inversores.forEach(inv => {
+          const cfg = verificarPar(nMin, mod, inv, comBat);
+          if (cfg) {
+            const custoEq = cfg.n_modulos * mod.preco_brl + inv.preco_brl;
+            if (!melhor || custoEq < melhor.custoEq) {
+              melhor = { mod, inv, cfg, custoEq };
+            }
+          }
+        });
+      });
+
+      const box = document.getElementById('sim-resultado');
+      if (!melhor) {
+        box.innerHTML = '<strong>Incompatibilidade Tecnica (PB18):</strong> Nenhuma combinacao modulo x inversor atende aos limites eletricos para os parametros informados.';
+        return;
+      }
+
+      let infoBatTxt = 'Sem armazenamento (On-Grid convencional, 0 kWh)';
+      let custoBat = 0;
+      if (comBat) {
+        const eAut = eDia * (autonomiaH / 24.0);
+        let melhorBat = null;
+        DADOS_FV.baterias.forEach(b => {
+          if (b.tensao_nominal_v >= melhor.inv.tensao_bateria_min_v && b.tensao_nominal_v <= melhor.inv.tensao_bateria_max_v) {
+            const dod = b.dod_pct / 100.0;
+            const cBat = eAut / (dod * 0.95);
+            const cUtil = b.capacidade_kwh * dod;
+            const nBat = Math.ceil((eAut / 0.95) / cUtil - 1e-9);
+            const custoB = nBat * b.preco_brl;
+            if (!melhorBat || custoB < melhorBat.custoB) {
+              melhorBat = { b, nBat, cBat, capNom: nBat * b.capacidade_kwh, capUtil: nBat * cUtil, custoB };
+            }
+          }
+        });
+        if (melhorBat) {
+          custoBat = melhorBat.custoB;
+          infoBatTxt = `${melhorBat.nBat}x [${melhorBat.b.id}] ${melhorBat.b.fabricante} ${melhorBat.b.modelo} (${fmtNum(melhorBat.capNom)} kWh nominais / ${fmtNum(melhorBat.capUtil)} kWh uteis para ${autonomiaH}h -> ${fmtBRL(custoBat)})`;
+        }
+      }
+
+      const cEquip = melhor.custoEq + custoBat;
+      const cOutros = cEquip * 0.17 + 500.0 * melhor.cfg.p_inst + 800.0;
+      const cTotal = cEquip + cOutros;
+      const eGerDia = melhor.cfg.p_inst * hspObj.hsp * pr;
+      const eGerMes = eGerDia * 30.0;
+      const atendPct = (eGerMes / consumoMes) * 100.0;
+      const eComp = Math.min(eGerMes, consumoMes);
+      const eExc = Math.max(0, eGerMes - consumoMes);
+      const econMes = eComp * tarifa;
+      const econAno = econMes * 12.0;
+      const paybackTotal = cTotal / econAno;
+      const paybackEquip = cEquip / econAno;
+
+      box.innerHTML = `
+        <h3>Resultado da Simulacao em Tempo Real (${hspObj.cidade}/${hspObj.uf} - ${comBat ? 'Com Baterias Hibrido' : 'Sem Baterias On-Grid'})</h3>
+        <p style="margin:4px 0;"><strong>1. Dimensionamento FV:</strong> E_dia = <strong>${fmtNum(eDia)} kWh/dia</strong> | P_FV necessaria = <strong>${fmtNum(pFv, 3)} kWp</strong> | Instalada = <strong>${fmtNum(melhor.cfg.p_inst, 2)} kWp</strong> (${melhor.cfg.n_modulos}x [${melhor.mod.id}] ${melhor.mod.fabricante} ${melhor.mod.modelo} de ${melhor.mod.potencia_wp} Wp)</p>
+        <p style="margin:4px 0;"><strong>2. Inversor e Geracao:</strong> [${melhor.inv.id}] ${melhor.inv.fabricante} ${melhor.inv.modelo} (${melhor.inv.potencia_nominal_w} W, R_DC/AC = ${fmtNum(melhor.cfg.ratio)}) | Geracao: <strong>${fmtNum(eGerDia)} kWh/dia</strong> (<strong>${fmtNum(eGerMes, 1)} kWh/mes</strong> -> <strong>${fmtNum(atendPct, 1)}%</strong> do consumo | Compensada: ${fmtNum(eComp)} kWh/mes | Excedente: ${fmtNum(eExc)} kWh/mes)</p>
+        <p style="margin:4px 0;"><strong>3. Armazenamento:</strong> ${infoBatTxt}</p>
+        <p style="margin:4px 0;"><strong>4. Orcamento e Payback Simples:</strong> Equipamentos (Datasets): <strong>${fmtBRL(cEquip)}</strong> | Investimento Total: <strong>${fmtBRL(cTotal)}</strong> | Economia: <strong>${fmtBRL(econMes)}/mes (${fmtBRL(econAno)}/ano)</strong> | <span class="badge-ok">Payback Simples: ${fmtNum(paybackTotal)} anos (Total) / ${fmtNum(paybackEquip)} anos (So Equipamentos)</span></p>
+      `;
+    }
+
+    window.addEventListener('DOMContentLoaded', inicializarSimulador);
+  </script>
 </body>
 </html>

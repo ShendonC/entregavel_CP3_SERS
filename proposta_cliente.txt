@@ -1,6 +1,6 @@
 ﻿==========================================================================
   PROPOSTA PRELIMINAR E RELATORIO CONSOLIDADO - SISTEMA FOTOVOLTAICO  Residencia Familia Silva (SP)
-  Gerada em 2026-10-15 19:48 | Equipe Lumos (FIAP - SERS Sprint 3)
+  Gerada em 2026-10-15 20:32 | Equipe Lumos (FIAP - SERS Sprint 3)
   Integrantes: Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)
 ==========================================================================
 
@@ -94,6 +94,7 @@ Aviso: estimativa academica (Payback Simples). Nao substitui projeto eletrico ex
   INVESTIMENTO TOTAL               | R$ 11.590,88             | R$ 33.317,78            
   Economia Mensal Estimada         | R$ 418,89/mes            | R$ 418,89/mes           
   Economia Anual Estimada          | R$ 5.026,68/ano          | R$ 5.026,68/ano         
+  Payback Simples (So Equip.)      | 1,49 anos                | 5,18 anos               
   PAYBACK SIMPLES (TOTAL)          | 2,31 anos                | 6,63 anos               
   ------------------------------------------------------------------------------------
   Diferenca de investimento: +R$ 21.726,90 (+187,4%) no sistema com baterias.
