@@ -1,6 +1,6 @@
 ﻿==========================================================================
   PROPOSTA PRELIMINAR E RELATORIO CONSOLIDADO - SISTEMA FOTOVOLTAICO  Residencia Familia Silva (SP)
-  Gerada em 2026-10-15 20:32 | Equipe Lumos (FIAP - SERS Sprint 3)
+  Gerada em 2026-10-15 20:33 | Equipe Lumos (FIAP - SERS Sprint 3)
   Integrantes: Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)
 ==========================================================================
 
