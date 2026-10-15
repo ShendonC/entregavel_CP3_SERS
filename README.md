@@ -9,12 +9,11 @@ Continuacao dos Checkpoints 1 e 2 - Disciplina: Solucoes em Energias Renovaveis 
 
 ---
 
-## LINKS DO PROJETO E KANBAN (SPRINTS 1, 2 E 3)
+## LINKS DO PROJETO (SPRINTS 1, 2 E 3)
 
 - **Entregavel CP1 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP1_sustentabilidade/tree/main
-- **Kanban / Trello CP1:** https://trello.com/invite/b/6a9b6947fa36b4d757bfadbf/ATTIf06135456fb1670e8f819b23dc4bacdf5FFB6243/sprintsers
-- **Entregavel CP2 / Base CP3 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP2_SERS
-- **Kanban / Trello CP2 & Sprint 3:** https://trello.com/invite/b/6aade675e4a2fddaa89bc71b/ATTI83a4196a19136758446b9c08d9516198BBE75C3E/cp02-sers20
+- **Entregavel CP2 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP2_SERS
+- **Entregavel CP3 / Sprint 3 Final (GitHub):** https://github.com/ShendonC/entregavel_CP3_SERS
 
 ---
 
