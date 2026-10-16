@@ -107,12 +107,6 @@ def montar_estado_completo(id_imovel_selecionado=None):
             hsp_info,
         )
 
-    cargas_det = sc.obter_cargas_detalhadas_imovel(id_imovel_selecionado)
-    fv.exportar_proposta_txt(comp["sem_bateria"], comp, imovel_atual["apelido"])
-    fv.exportar_proposta_html(
-        comp["sem_bateria"], comp, imovel_atual["apelido"], cargas_residencia=cargas_det
-    )
-
     catalogo_equip = [
         {"id": eid, "nome": eq["nome"], "categoria": eq["categoria"], "potencia": float(eq["potencia"])}
         for eid, eq in sc.dados["equipamentos"].items()
@@ -1394,18 +1388,15 @@ class ServidorFotovoltaicoHandler(BaseHTTPRequestHandler):
                 ok = qa_testes.rodar_todos_os_testes()
             return self._enviar_json({"ok": ok, "output": buf.getvalue()})
 
-        if rota in ("/proposta_cliente.html", "/proposta_cliente.txt"):
-            arq = os.path.join(PASTA_BASE, rota.lstrip("/"))
-            if os.path.exists(arq):
-                with open(arq, "rb") as f:
-                    conteudo = f.read()
-                ctype = "text/html; charset=utf-8" if rota.endswith(".html") else "text/plain; charset=utf-8"
-                self.send_response(200)
-                self.send_header("Content-Type", ctype)
-                self.send_header("Content-Length", str(len(conteudo)))
-                self.end_headers()
-                self.wfile.write(conteudo)
-                return
+        if rota == "/proposta_cliente.txt":
+            est = montar_estado_completo()
+            conteudo = (est["proposta_txt"] + "\n\n" + est["comparacao_txt"]).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(conteudo)))
+            self.end_headers()
+            self.wfile.write(conteudo)
+            return
 
         self.send_error(404, "Rota nao encontrada")
 
@@ -1538,9 +1529,6 @@ class ServidorFotovoltaicoHandler(BaseHTTPRequestHandler):
                     potencia_residencia_w=pot_casa_w,
                 )
                 id_salvo = sc.salvar_dimensionamento_no_banco(imovel_id, r, {"cidade": cidade, "uf": uf}, hsp_info)
-                cargas_det = sc.obter_cargas_detalhadas_imovel(imovel_id)
-                fv.exportar_proposta_txt(r, comp, imovel["apelido"])
-                fv.exportar_proposta_html(r, comp, imovel["apelido"], cargas_residencia=cargas_det)
 
                 historico = [dict(d, id=k) for k, d in sc.dados.get("dimensionamentos", {}).items()]
                 historico.reverse()

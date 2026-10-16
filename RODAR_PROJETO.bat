@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+set PYTHONDONTWRITEBYTECODE=1
 title CP3 - Sistema Web de Orcamento Fotovoltaico (Sprint 3 - Equipe Lumos FIAP)
 cd /d "%~dp0"
 
@@ -9,9 +10,9 @@ echo   Equipe Lumos FIAP: Pietro Lorande (RM569125) ^| Luiz Otavio (RM569977) ^|
 echo ========================================================================================
 echo.
 echo [1/2] Executando validacao dos datasets CSV e bateria de testes automatizados...
-python testes.py
+python -B testes.py
 echo.
 echo [2/2] Iniciando Interface Grafica Web Full-Stack (Python + Navegador)...
-python app_web.py
+python -B app_web.py
 
 pause
