@@ -14,6 +14,7 @@ Continuacao dos Checkpoints 1 e 2 - Disciplina: Solucoes em Energias Renovaveis 
 - **Entregavel CP1 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP1_sustentabilidade/tree/main
 - **Entregavel CP2 (GitHub):** https://github.com/pietrolorande01-ELFzen/entregavel_CP2_SERS
 - **Entregavel CP3 / Sprint 3 Final (GitHub):** https://github.com/ShendonC/entregavel_CP3_SERS
+- **Quadro Trello / Kanban Finalizado (PB01 a PB21 - 100% Done):** [QUADRO_TRELLO_KANBAN_SPRINT3.md](./QUADRO_TRELLO_KANBAN_SPRINT3.md) | [backlog_sprint3_kanban.csv](./backlog_sprint3_kanban.csv)
 
 ---
 
@@ -152,7 +153,7 @@ projeto/
 ### Caso Demonstrado: `Residencia Familia Silva (SP)` - Sao Paulo/SP
 
 1. **Demanda Energetica da Residencia (PB01 / PB02):**
-   - **Potencia instalada das cargas da residencia:** `9.963 W` (`9,963 kW`) distribuidos em 8 grupos de equipamentos (chuveiro eletrico, ar-condicionado, geladeira, micro-ondas, maquina de lavar, computador, TVs e iluminacao LED).
+   - **Potencia instalada das cargas da residencia:** `9.013 W` (`9,013 kW`) distribuidos em 8 grupos de equipamentos (chuveiro eletrico, ar-condicionado, geladeira, micro-ondas, maquina de lavar, computador, TVs e iluminacao LED).
    - **Consumo mensal calculado (`E_mes`):** `455,31 kWh/mes`.
    - **Consumo medio diario (`E_dia = E_mes / 30`):** `15,18 kWh/dia`.
    - **Recurso solar local (PB03):** Sao Paulo/SP com `HSP = 5,00 kWh/m2/dia` (fonte: CRESESB/SunData) e Performance Ratio `PR = 0,78 (78%)`.

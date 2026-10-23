@@ -1,0 +1,108 @@
+﻿==========================================================================
+  PROPOSTA PRELIMINAR E RELATORIO CONSOLIDADO - SISTEMA FOTOVOLTAICO  Residencia Familia Silva (SP)
+  Gerada em 2026-10-15 22:20 | Equipe Lumos (FIAP - SERS Sprint 3)
+  Integrantes: Pietro Lorande (RM 569125) | Luiz Otavio Brito Freixo (RM 569977) | Maria Eduarda Lemos (RM 574094)
+==========================================================================
+
+[1] CONSUMO E DEMANDA ENERGETICA DA RESIDENCIA (PB01 / PB02)
+  Consumo de referencia .... 455,31 kWh/mes (calculado pelos equipamentos cadastrados na residencia)
+  Consumo medio diario ..... 15,177 kWh/dia  (E_dia = E_mes / 30)
+  Potencia instalada (casa)  9.013 W (9,013 kW)
+  Percentual de atendimento  100 %
+  Energia mensal pretendida  455,31 kWh/mes  (E_FV = Cm * f)
+
+[2] RECURSO SOLAR E DESEMPENHO DO SISTEMA (PB03)
+  Localidade ............... São Paulo/SP - HSP 5,00 kWh/m2/dia
+  Origem do dado ........... CRESESB/SunData (via tabela publicada) - https://energiasolarexplicada.com.br/blog/quantas-placas-solares-preciso/
+  Performance Ratio (PR) ... 78,0 % (fator 0,78)
+  Justificativa do PR ...... PR = 0,78 (78%) adotado conforme Nota Tecnica EPE DEA-SEE 009/2023 e manual CRESESB/CEPEL (faixa tipica residencial de 75% a 80%), contabilizando perdas termicas nos modulos (~8%), sujeira e sombreamento leve (~5%), quedas ohmicas em cabos CC/CA (~3%), mismatch (~2%) e eficiencia de conversao do inversor (~2% a 4%).
+
+[3] DIMENSIONAMENTO E GERACAO FOTOVOLTAICA (PB04 / PB08 / PB09)
+  Potencia FV calculada .... 3,892 kWp  (P_FV = E_dia / (HSP * PR) = E_FV / (HSP * 30 * 0,78))
+  Potencia instalada ....... 4,050 kWp  (P_inst = N_mod * P_mod / 1000)
+  Geracao estimada diaria .. 15,79 kWh/dia  (E_gerada,dia = P_inst * HSP * PR)
+  Geracao estimada mensal .. 473,9 kWh/mes (104,1 % do consumo)
+  Energia compensada/mes ... 455,31 kWh/mes (abatida da fatura)
+  Excedente injetado/mes ... 18,54 kWh/mes (geracao supera o consumo; vira credito energetico na concessionaria)
+
+[4] MODULOS FOTOVOLTAICOS (PB05 / PB06)
+  Modulo escolhido ......... [FV006] Trina Solar TSM-405DE09 (Vertex S)
+  Especificacoes do modulo . Potencia: 405 Wp | Eficiencia: 21,10 % | Vmp: 34,20 V | Imp: 11,85 A | Voc: 41,20 V
+  Quantidade dimensionada .. 10 x Trina Solar TSM-405DE09 (Vertex S) (405 Wp)
+  Arranjo eletrico ......... N minimo 10 -> N final 10 (1 string(s) de 10 modulos)
+
+[5] INVERSOR SELECIONADO E COMPATIBILIDADE (PB07)
+  Inversor escolhido ....... [INV001] Growatt MIC 3000TL-X (on-grid, 3000 W)
+  Limites e eficiencia ..... Pot. FV max: 4200 W | MPPT: 50-500 V (1 MPPT, max 13,0 A) | Eficiencia: 97,6 %
+  Verificacao eletrica ..... Voc string 453,2 V | Vmp string 342,0 V | R_DC/AC 1,35 | combinacoes validas: 6
+
+[6] ARMAZENAMENTO / BATERIAS (PB10 / PB11 / PB12)
+  Sem armazenamento - capacidade 0 kWh, custo R$ 0,00.
+
+[7] ORCAMENTO ESTIMADO (PB13)
+  QTD | EQUIPAMENTO (FABRICANTE / MODELO)    |    PRECO UNIT. |       SUBTOTAL
+  ------------------------------------------------------------------------
+   10 x Modulo Trina Solar TSM-405DE09 (Vert |      R$ 590,32 |    R$ 5.903,20
+    1 x Inversor Growatt MIC 3000TL-X        |    R$ 1.589,00 |    R$ 1.589,00
+  ------------------------------------------------------------------------
+  CUSTO DOS EQUIPAMENTOS                                       R$ 7.492,20
+  Outros custos (premissas da equipe):
+     Estrutura de fixacao               8% dos equipamentos        R$ 599,38
+     Cabeamento e conectores            4% dos equipamentos        R$ 299,69
+     Protecoes / string box             5% dos equipamentos        R$ 374,61
+     Instalacao (mao de obra)           R$ 500/kWp               R$ 2.025,00
+     Projeto e homologacao              valor fixo                 R$ 800,00
+  CUSTO TOTAL ESTIMADO                                        R$ 11.590,88
+
+[8] ANALISE ECONOMICA E PAYBACK SIMPLES (PB15 / PB16)
+  Tarifa utilizada ......... R$ 0,92/kWh (Tarifa convencional B1 residencial com impostos (referencia ANEEL / Enel SP 2026))
+  Energia compensada ....... 455,31 kWh/mes (de 473,85 kWh/mes gerados)
+  Economia mensal estimada . R$ 418,89 / mes  (Economia_mensal = E_compensada * tarifa)
+  Economia anual estimada .. R$ 5.026,68 / ano  (Economia_anual = Economia_mensal * 12)
+  Payback simples (total) .. 2.31 anos (~2 anos e 4 meses)  (Payback = Investimento / Economia_anual)
+  Payback simples (equip.) . 1,49 anos (considerando apenas equipamentos)
+  Premissas do calculo ..... Tarifa considerada: R$ 0.92/kWh (Tarifa convencional B1 residencial com impostos (referencia ANEEL / Enel SP 2026)). Energia compensada limitada ao consumo da residencia (min(E_gerada, E_consumo) = 455.31 kWh/mes). Calculo estimativo de 12 meses constantes, sem considerar reajustes tarifarios futuros ou fio B.
+  Nota sobre payback ....... Resultado calculado como PAYBACK SIMPLES (Investimento / Economia_anual). Trata-se de uma estimativa preliminar de tempo de retorno e NAO representa previsao financeira exata (nao inclui taxa de desconto/VPL, inflacao energetica, degradacao anual dos modulos nem custos de substituicao de baterias ao longo de 25 anos).
+
+[9] ORIGEM DOS PRECOS E RASTREABILIDADE DOS DATASETS (PB05 / PB07 / PB12)
+  - Modulo Trina Solar TSM-405DE09 (Vertex S): Minha Casa Solar (2026-10-01) https://www.minhacasasolar.com.br/painel-solar-405w-monocristalino-half-cell-trina-solar-tsm-405de09-82174
+  - Inversor Growatt MIC 3000TL-X: Mercado Livre (2026-10-01) https://lista.mercadolivre.com.br/inversor-solar-growatt
+
+Aviso: estimativa academica (Payback Simples). Nao substitui projeto eletrico executivo, ART nem vistoria.
+==========================================================================
+
+
+========================================================================================
+  COMPARACAO DE CENARIOS (PB14) E DEFESA TECNICO-ECONOMICA (SECAO 9) - Residencia Familia Silva (SP)
+========================================================================================
+  INDICADOR / CARACTERISTICA       | CENARIO 1: SEM BATERIAS  | CENARIO 2: COM BATERIAS 
+  ------------------------------------------------------------------------------------
+  Consumo Mensal / Diario          | 455,31 kWh / 15,18 kWh/d | 455,31 kWh / 15,18 kWh/d
+  Potencia FV Calculada            | 3,892 kWp                | 3,892 kWp               
+  Potencia FV Instalada            | 4,050 kWp                | 4,050 kWp               
+  Modulos Fotovoltaicos            | 10x FV006 (405Wp)        | 10x FV006 (405Wp)       
+  Inversor Selecionado             | INV001 Growatt (on-grid) | INV006 Deye (hibrido)   
+  Potencia / Efic. Inversor        | 3000 W / 97,6%           | 5000 W / 97,6%          
+  Geracao Mensal Estimada          | 473,9 kWh/mes            | 473,9 kWh/mes           
+  Atendimento da Demanda           | 104,1 %                  | 104,1 %                 
+  Energia Compensada / Mes         | 455,31 kWh/mes           | 455,31 kWh/mes          
+  Banco de Baterias                | Nao possui (0 kWh)       | 2x BAT005 (Deye)        
+  Capacidade Armazenada            | 0,00 kWh                 | 10,24 kWh (9,22 uteis)  
+  Autonomia de Backup              | 0 h (depende da rede)    | 12,0 h (7,59 kWh)       
+  Custo dos Equipamentos           | R$ 7.492,20              | R$ 26.062,20            
+  Outros Custos / Instalacao       | R$ 4.098,68              | R$ 7.255,58             
+  INVESTIMENTO TOTAL               | R$ 11.590,88             | R$ 33.317,78            
+  Economia Mensal Estimada         | R$ 418,89/mes            | R$ 418,89/mes           
+  Economia Anual Estimada          | R$ 5.026,68/ano          | R$ 5.026,68/ano         
+  Payback Simples (So Equip.)      | 1,49 anos                | 5,18 anos               
+  PAYBACK SIMPLES (TOTAL)          | 2,31 anos                | 6,63 anos               
+  ------------------------------------------------------------------------------------
+  Diferenca de investimento: +R$ 21.726,90 (+187,4%) no sistema com baterias.
+  Diferenca de payback simples: +4,32 anos para recuperar o investimento adicional.
+
+[PARECER TECNICO E ECONOMICO - QUESTAO FINAL DA SPRINT REVIEW (SECAO 9)]
+Para a residencia analisada (consumo de 455.31 kWh/mes ou 15.18 kWh/dia em São Paulo/SP, HSP = 5.00 kWh/m2/dia, PR = 78%), o sistema SEM ARMAZENAMENTO (On-Grid) e a solucao que faz mais sentido sob a otica tecnico-economica para um consumidor residencial conectado a rede urbana confiavel.
+  1) Desempenho Tecnico e Geracao: Ambos os cenarios instalam 4.050 kWp (10 modulos Trina Solar TSM-405DE09 (Vertex S) de 405 Wp) e geram 473.85 kWh/mes (15.79 kWh/dia), atendendo 104.1% do consumo mensal com 455.31 kWh/mes efetivamente compensados.
+  2) Impacto dos Equipamentos e Armazenamento: A opcao COM BATERIAS exige substituir o inversor on-grid (Growatt MIC 3000TL-X, R$ 1589.00) por um inversor hibrido (Deye SUN-5K-SG04LP1-EU-SM2, R$ 7859.00) e adicionar 2 bateria(s) Deye SE-F5 (10.24 kWh nominais / 9.22 kWh uteis, custo de R$ 12300.00) para garantir 12 h de autonomia (7.59 kWh).
+  3) Viabilidade Economica e Payback Simples: Como na modalidade de compensacao de creditos (GD) a economia na conta de luz e identica nos dois cenarios (R$ 418.89/mes ou R$ 5026.68/ano a tarifa de R$ 0.92/kWh), o investimento total salta de R$ 11590.88 (Sem Baterias) para R$ 33317.78 (Com Baterias), um acrescimo de R$ 21726.90 (+187.4%). Isso eleva o Payback Simples de 2.31 anos para 6.63 anos (+4.32 anos). Portanto, o sistema com baterias so se justifica caso a residencia sofra interrupcoes frequentes da concessionaria ou possua cargas criticas que exijam nobreak solar de 12 h.
+========================================================================================

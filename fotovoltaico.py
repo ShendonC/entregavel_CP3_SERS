@@ -481,6 +481,8 @@ def verificar_modulo_inversor(n_minimo, mod, inv, com_bateria, P=PARAMETROS_FV):
         motivos.append(f"C6: razao DC/AC {ratio:.2f} fora da faixa {ratio_min}-{P['ratio_dc_ac_max']}")
     if motivos:
         return None, motivos
+    eficiencia_frac = max(0.10, float(mod.get("eficiencia_pct", 20.0)) / 100.0)
+    area_estimada_m2 = round(p_inst / eficiencia_frac, 1)
     return {
         "n_modulos": n_final,
         "n_strings": n_strings,
@@ -489,6 +491,7 @@ def verificar_modulo_inversor(n_minimo, mod, inv, com_bateria, P=PARAMETROS_FV):
         "ratio_dc_ac": ratio,
         "voc_string_v": por_string * mod["voc_v"] * P["fator_voc_frio"],
         "vmp_string_v": por_string * mod["vmp_v"],
+        "area_m2": area_estimada_m2,
     }, []
 
 
@@ -1203,10 +1206,10 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
               <tr><td>Payback Simples (Investimento Total / Economia Anual) (PB16)</td><td><span class="badge-ok">{a['payback']['payback_formatado']}</span></td><td><span class="badge-warn">{b['payback']['payback_formatado']}</span></td></tr>
             </tbody>
           </table>
-          <div class="callout" style="border-left-color:#059669; background:#ecfdf5;">
+          <div class="callout" style="border-color:#a7f3d0; background:#ecfdf5;">
             <h3 style="color:#065f46;">Resposta da Questao Final da Sprint Review (Secao 9 do PDF)</h3>
-            <p style="margin:6px 0;"><strong>Pergunta do Professor:</strong> <em>"Para a residencia utilizada na demonstracao, qual solucao faz mais sentido: sistema fotovoltaico sem armazenamento ou sistema com baterias? Quais resultados tecnicos e economicos do projeto sustentam a analise?"</em></p>
-            <p style="white-space: pre-line; margin-top:10px;">{comp['analise_questao_final']}</p>
+            <p style="margin:6px 0; max-width:70ch;"><strong>Pergunta do Professor:</strong> <em>"Para a residencia utilizada na demonstracao, qual solucao faz mais sentido: sistema fotovoltaico sem armazenamento ou sistema com baterias? Quais resultados tecnicos e economicos do projeto sustentam a analise?"</em></p>
+            <p style="white-space: pre-line; margin-top:10px; max-width:72ch;">{comp['analise_questao_final']}</p>
           </div>
         </section>
         """
@@ -1269,17 +1272,19 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
     body {{
       margin: 0;
       padding: 24px;
-      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background: var(--bg);
       color: var(--ink);
       line-height: 1.5;
+      font-variant-numeric: tabular-nums;
     }}
-    .container {{ max-width: 1180px; margin: 0 auto; }}
+    .container {{ max-width: 1240px; margin: 0 auto; }}
     header {{
-      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
-      color: #fff;
-      padding: 28px 32px;
-      border-radius: 12px;
+      background: #0b1120;
+      color: #f8fafc;
+      padding: 24px 28px;
+      border-radius: 10px;
+      border: 1px solid #1e293b;
       margin-bottom: 20px;
       display: flex;
       justify-content: space-between;
@@ -1287,74 +1292,74 @@ def exportar_proposta_html(r, comp=None, apelido="Residencia", caminho_arquivo=N
       flex-wrap: wrap;
       gap: 16px;
     }}
-    header h1 {{ margin: 0 0 8px 0; font-size: 24px; }}
-    header p {{ margin: 4px 0; color: #cbd5e1; font-size: 14px; }}
+    header h1 {{ margin: 0 0 6px 0; font-size: 20px; letter-spacing: -0.02em; }}
+    header p {{ margin: 3px 0; color: #94a3b8; font-size: 13px; }}
     .nav-bar {{
       display: flex;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
       background: var(--surface);
-      padding: 12px 16px;
-      border-radius: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
       border: 1px solid var(--border);
     }}
     .nav-bar a, .btn-action {{
       text-decoration: none;
-      background: #f1f5f9;
-      color: #1e3a8a;
+      background: #f8fafc;
+      color: #0f172a;
       font-weight: 600;
       font-size: 13px;
       padding: 8px 14px;
-      border-radius: 8px;
+      border-radius: 6px;
       border: 1px solid #cbd5e1;
       cursor: pointer;
     }}
-    .nav-bar a:hover, .btn-action:hover {{ background: #e0f2fe; border-color: #0284c7; }}
+    .nav-bar a:hover, .btn-action:hover {{ background: #f1f5f9; border-color: #94a3b8; }}
     .btn-primary {{ background: #0284c7; color: #fff; border-color: #0284c7; }}
     .btn-primary:hover {{ background: #0369a1; color: #fff; }}
     .grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 14px;
+      margin-bottom: 20px;
     }}
     .kpi {{
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 20px;
+      border-radius: 8px;
+      padding: 16px 18px;
     }}
-    .kpi .label {{ font-size: 12px; text-transform: uppercase; color: var(--muted); font-weight: 600; }}
+    .kpi .label {{ font-size: 11.5px; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); font-weight: 600; }}
     .kpi .value {{ font-size: 22px; font-weight: 700; color: var(--ink); margin-top: 4px; }}
     .kpi .sub {{ font-size: 12px; color: var(--muted); margin-top: 4px; }}
     .card {{
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 24px;
-      margin-bottom: 24px;
+      border-radius: 8px;
+      padding: 22px;
+      margin-bottom: 20px;
     }}
     .card h2 {{
       margin-top: 0;
-      font-size: 18px;
-      border-bottom: 2px solid var(--border);
+      font-size: 16.5px;
+      border-bottom: 1px solid var(--border);
       padding-bottom: 10px;
-      color: #1e3a8a;
+      color: #0f172a;
     }}
-    table {{ width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 13.5px; }}
+    table {{ width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }}
     th, td {{ border: 1px solid var(--border); padding: 9px 11px; text-align: left; vertical-align: top; }}
-    th {{ background: #f1f5f9; font-weight: 600; }}
-    .badge-ok {{ background: #d1fae5; color: #065f46; padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
-    .badge-warn {{ background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: 600; }}
+    th {{ background: #f8fafc; font-weight: 600; color: #334155; }}
+    .badge-ok {{ background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }}
+    .badge-warn {{ background: #fffbeb; color: #92400e; border: 1px solid #fde68a; padding: 2px 8px; border-radius: 6px; font-weight: 600; font-size: 12px; }}
     .callout {{
-      background: #f0f9ff;
-      border-left: 4px solid var(--accent);
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
       padding: 16px 20px;
-      border-radius: 6px;
-      margin-top: 18px;
+      border-radius: 8px;
+      margin-top: 16px;
     }}
-    .callout h3 {{ margin: 0 0 8px 0; font-size: 16px; color: #0369a1; }}
+    .callout h3 {{ margin: 0 0 8px 0; font-size: 15px; color: #0f172a; }}
     .sim-grid {{
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));

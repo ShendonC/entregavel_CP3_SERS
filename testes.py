@@ -219,10 +219,18 @@ def rodar_testes_fotovoltaico():
         assert len(est["imoveis"]) >= 1
         assert est["imovel_atual"]["consumo_mensal_kwh"] > 0
         assert est["dimensionamento_atual"]["p_inst"] > 0
+        assert est["dimensionamento_atual"]["selecao"]["config"]["area_m2"] > 0
         assert "sem_bateria" in est["comparacao_atual"] and "com_bateria" in est["comparacao_atual"]
         assert len(est["datasets"]["modulos"]) == 10
         assert len(est["datasets"]["inversores"]) == 8
         assert len(est["datasets"]["baterias"]) == 6
+        assert isinstance(est["datasets"]["hsp_localidades"], list)
+        assert len(est["datasets"]["hsp_localidades"]) == 18
+        assert "cidade" in est["datasets"]["hsp_localidades"][0] and "hsp" in est["datasets"]["hsp_localidades"][0]
+        assert est["datasets"]["validacao_ok"] is True
+        assert "APROVADO" in est["datasets"]["validacao_texto"]
+        for ch in app_web.HTML_APP:
+            assert ord(ch) < 0x1F300, f"Caractere emoji detectado na UI: {repr(ch)}"
 
     testes = [
         ("PB01/PB03 HSP por localizacao", t_pb01),

@@ -197,12 +197,45 @@
       "economia_mensal_brl": 418.89,
       "economia_anual_brl": 5026.68,
       "payback_simples_anos": 6.63
+    },
+    "3": {
+      "imovel_id": "1",
+      "data": "2026-10-16 17:41",
+      "consumo_kwh_mes": 455.31,
+      "consumo_kwh_dia": 15.177,
+      "potencia_residencia_w": 9013.0,
+      "percentual": 100.0,
+      "localidade": "São Paulo/SP",
+      "hsp": 5.0,
+      "fonte_hsp": "CRESESB/SunData (via tabela publicada)",
+      "pr": 0.78,
+      "potencia_calculada_kwp": 3.892,
+      "potencia_instalada_kwp": 4.05,
+      "geracao_dia_kwh": 15.79,
+      "geracao_mes_kwh": 473.85,
+      "atendimento_pct": 104.07,
+      "energia_compensada_kwh_mes": 455.31,
+      "energia_excedente_kwh_mes": 18.54,
+      "modulo_id": "FV006",
+      "n_modulos": 10,
+      "inversor_id": "INV001",
+      "bateria_id": null,
+      "n_baterias": 0,
+      "autonomia_h": 0,
+      "capacidade_instalada_kwh": 0.0,
+      "c_equipamentos": 7492.2,
+      "c_outros": 4098.68,
+      "c_total": 11590.88,
+      "tarifa_brl_kwh": 0.92,
+      "economia_mensal_brl": 418.89,
+      "economia_anual_brl": 5026.68,
+      "payback_simples_anos": 2.31
     }
   },
   "next_ids": {
     "imovel": 2,
     "equipamento": 11,
     "associacao": 9,
-    "dimensionamento": 3
+    "dimensionamento": 4
   }
 }

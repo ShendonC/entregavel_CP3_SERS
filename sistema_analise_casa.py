@@ -254,7 +254,7 @@ def popular_residencia_demonstracao():
             "localizacao": {"cidade": "São Paulo", "uf": "SP"},
             "dono_email": email_demo,
         }
-        # Cargas residenciais tipicas associadas ao imovel (426,30 kWh/mes e 9.963 W instalados):
+        # Cargas residenciais tipicas associadas ao imovel (455,31 kWh/mes e 9.013 W instalados):
         # 1x Geladeira (133W, 24h), 1x Chuveiro (5500W, 0.75h), 2x TV (100W, 4h),
         # 1x Ar-condicionado (1200W, 4h), 1x Micro-ondas (1200W, 0.3h),
         # 1x Maquina de lavar (500W, 1h), 1x Computador (200W, 5h), 8x Lampada LED (10W, 5h)
