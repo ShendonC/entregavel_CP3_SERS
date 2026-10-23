@@ -2,6 +2,7 @@
 
 - **Disciplina:** Soluções em Energias Renováveis e Sustentáveis — Prof. Álvaro Alexandre Rezende Gonçalves (FIAP)
 - **Turma:** 1CCPZ-2026
+- **Vídeo Pitch (Sprint Review Final — 4m20s):** https://youtu.be/Q51Fwq88Q-A
 - **Equipe Lumos:**
   - **Pietro Lorande** — RM 569125
   - **Luiz Otávio Brito Freixo** — RM 569977
