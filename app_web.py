@@ -3160,7 +3160,7 @@ class ServidorFotovoltaicoHandler(BaseHTTPRequestHandler):
             permitidos = {"fotovoltaico.py", "sistema_analise_casa.py", "app_web.py", "testes.py"}
             if arq not in permitidos:
                 return self._enviar_json({"ok": False, "erro": "Arquivo nao autorizado."}, status=400)
-            caminho_py = os.path.join(fv.BASE_DIR, arq)
+            caminho_py = os.path.join(sc.PASTA_BASE, arq)
             with open(caminho_py, "r", encoding="utf-8-sig") as f:
                 linhas = f.read().splitlines()
             numerado = "\n".join(f"{i+1:4d} | {ln}" for i, ln in enumerate(linhas))
